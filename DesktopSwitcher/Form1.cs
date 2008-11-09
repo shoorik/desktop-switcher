@@ -44,6 +44,7 @@ namespace DesktopSwitcher
                 timernum.Value = decimal.Parse((string)ourkey.GetValue("interval"));
                 startmintool.Checked = bool.Parse((string)ourkey.GetValue("startmin"));
                 denomindex = (int)ourkey.GetValue("denomindex");
+                dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
                 ourkey.Close();
             }
             catch (Exception x) { x.ToString(); }
@@ -67,6 +68,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("interval", timernum.Value);
             ourkey.SetValue("startmin", startmintool.Checked);
             ourkey.SetValue("denomindex", denomindex);
+            ourkey.SetValue("dualmon", dualmon.Checked);
             ourkey.Close();
         }
 
@@ -95,10 +97,8 @@ namespace DesktopSwitcher
         private bool checkforpics(FileInfo[] files)
         {
             foreach(FileInfo f in files)
-            {
                 if (exts.Contains(f.Extension.ToLower())) 
                     return true;
-            }
             return false;
         }
 
@@ -122,7 +122,7 @@ namespace DesktopSwitcher
                 file = dirtb.Text + "\\" + getrandompic(0);
             path = dirtb.Text + "\\Background.bmp";
             Bitmap b = new Bitmap(file);
-            if (b.Width < 2560 && use == "")
+            if (b.Width < 2560 && use == "" && dualmon.Checked)
             {
                 Bitmap temp = b;
                 Bitmap b2 = new Bitmap(dirtb.Text + "\\" + getrandompic(temp.Width));
