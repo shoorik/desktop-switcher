@@ -26,6 +26,8 @@ namespace DesktopSwitcher
         string[] denoms = new string[] { "Seconds", "Minutes", "Hours", "Days" };
         int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };
         int denomindex = 1;
+        Screen[] desktops = Screen.AllScreens;
+        int totalwidth;
 
         public Form1()
         {
@@ -34,6 +36,7 @@ namespace DesktopSwitcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            dualmon.Checked = desktops.Length > 1;
             timer.Tick += new EventHandler(timer_Tick);
             trayicon.Icon = this.Icon;
             try
@@ -52,11 +55,38 @@ namespace DesktopSwitcher
             if (startmintool.Checked)
                 this.WindowState = FormWindowState.Minimized;
             timedenom.Text = denoms[denomindex];
+            getscreens();
+            foreach (Screen s in desktops)
+                totalwidth += s.Bounds.Width;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             regsave();
+        }
+
+        /// <summary>
+        /// counts number of screens and their sizes, displays them in menu bar, saves them in desktops array
+        /// </summary>
+        private void getscreens()
+        {
+            ToolStripMenuItem[] t = new ToolStripMenuItem[desktops.Length];
+            for (int i = 0; i < desktops.Length; i++)
+            {
+                t[i] = new ToolStripMenuItem();
+                ToolStripMenuItem[] props = new ToolStripMenuItem[3];
+                for (int j = 0; j < props.Length; j++)
+                    props[j] = new ToolStripMenuItem();
+                t[i].Text = "Screen " + (i + 1).ToString();
+                if (desktops[i].Primary)
+                    t[i].Text += "(P)";
+                props[0].Text = "Width:  " + desktops[i].Bounds.Width.ToString();
+                props[1].Text = "Height: " + desktops[i].Bounds.Height.ToString();
+                props[2].Text = "Ratio:  " + ((double)desktops[i].Bounds.Width / (double)desktops[i].Bounds.Height).ToString();
+
+                t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
+            }
+            screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
         }
 
         private void regsave()
@@ -122,21 +152,35 @@ namespace DesktopSwitcher
                 file = dirtb.Text + "\\" + getrandompic(0);
             path = dirtb.Text + "\\Background.bmp";
             Bitmap b = new Bitmap(file);
-            if (b.Width < 2560 && use == "" && dualmon.Checked)
+            if (b.Width < totalwidth && use == "" && dualmon.Checked)
             {
-                Bitmap temp = b;
-                Bitmap b2 = new Bitmap(dirtb.Text + "\\" + getrandompic(temp.Width));
-                Graphics g;
-                b = new Bitmap(temp.Width + b2.Width, temp.Height);
-                g = Graphics.FromImage(b);
-                g.DrawImage(temp, 0, 0,temp.Width,temp.Height);
-                g.DrawImage(b2, temp.Width + 1, 0, b2.Width, b2.Height);
-                g.Save();
+                for (int i = 1; i < desktops.Length; i++)
+                {
+                    Bitmap temp = b;
+                    Bitmap b2 = new Bitmap(dirtb.Text + "\\" + getrandompic(desktops[i].Bounds.Width));
+                    Graphics g;
+                    b = new Bitmap(temp.Width + b2.Width, temp.Height);
+                    g = Graphics.FromImage(b);
+                    g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
+                    g.DrawImage(b2, temp.Width + 1, 0, b2.Width, b2.Height);
+                    g.Save();
+                }
             }
             b.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
             RegistryKey ourkey = Registry.CurrentUser.OpenSubKey("Control Panel\\Desktop", true);
             ourkey.SetValue("Wallpaper", path);
-            ourkey.SetValue("TileWallpaper", (use == "" || use != "" && b.Width > 1024) ? "1": "0");
+            ourkey.SetValue("TileWallpaper", "0");
+            ourkey.SetValue("WallpaperStyle", "0");
+            if (use == "" || use != "" && b.Width > desktops[0].Bounds.Width)
+            {
+                ourkey.SetValue("TileWallpaper", "1");
+                ourkey.SetValue("WallpaperStyle", "0");
+            }
+            else if (((float)b.Width / (float)b.Height) > ((float)desktops[0].Bounds.Width / (float)desktops[0].Bounds.Height) - (float)ratiobox.Value && ((float)b.Width / (float)b.Height) < ((float)desktops[0].Bounds.Width / (float)desktops[0].Bounds.Height) + (float)ratiobox.Value)  //ratio of picture is between ratio of screen 1 +/- ratio tolerance
+            {
+                ourkey.SetValue("TileWallpaper", "0");
+                ourkey.SetValue("WallpaperStyle", "2");
+            }
             ourkey.Close();
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path,SPIF_SENDWININICHANGE);
         }
@@ -235,6 +279,12 @@ namespace DesktopSwitcher
             if (++denomindex == 4)
                 denomindex = 0;
             timedenom.Text = denoms[denomindex];
+        }
+
+        private void dualmon_Click(object sender, EventArgs e)
+        {
+            if (desktops.Length < 2)
+                dualmon.Checked = false;
         }
     }
 }

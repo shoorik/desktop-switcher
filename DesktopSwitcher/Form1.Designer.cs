@@ -37,7 +37,10 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dualmon = new System.Windows.Forms.ToolStripMenuItem();
             this.startmintool = new System.Windows.Forms.ToolStripMenuItem();
+            this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.changebutton = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.browsedialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -50,11 +53,12 @@
             this.traychange = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dualmon = new System.Windows.Forms.ToolStripMenuItem();
+            this.ratiobox = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ratiobox)).BeginInit();
             this.SuspendLayout();
             // 
             // dirtb
@@ -106,7 +110,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.screenslist});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -117,8 +122,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem,
-            this.startmintool});
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -126,9 +130,28 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dualmon,
+            this.startmintool});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // dualmon
+            // 
+            this.dualmon.Checked = true;
+            this.dualmon.CheckOnClick = true;
+            this.dualmon.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.dualmon.Name = "dualmon";
+            this.dualmon.Size = new System.Drawing.Size(157, 22);
+            this.dualmon.Text = "Dual Monitor";
+            this.dualmon.Click += new System.EventHandler(this.dualmon_Click);
             // 
             // startmintool
             // 
@@ -136,6 +159,12 @@
             this.startmintool.Name = "startmintool";
             this.startmintool.Size = new System.Drawing.Size(157, 22);
             this.startmintool.Text = "Start Minimized";
+            // 
+            // screenslist
+            // 
+            this.screenslist.Name = "screenslist";
+            this.screenslist.Size = new System.Drawing.Size(57, 20);
+            this.screenslist.Text = "Screens";
             // 
             // changebutton
             // 
@@ -149,10 +178,10 @@
             // 
             // gobutton
             // 
-            this.gobutton.Location = new System.Drawing.Point(68, 84);
+            this.gobutton.Location = new System.Drawing.Point(10, 83);
             this.gobutton.Name = "gobutton";
             this.gobutton.Size = new System.Drawing.Size(75, 23);
-            this.gobutton.TabIndex = 10;
+            this.gobutton.TabIndex = 0;
             this.gobutton.Text = "Go";
             this.gobutton.UseVisualStyleBackColor = true;
             this.gobutton.Click += new System.EventHandler(this.gobutton_Click);
@@ -230,28 +259,40 @@
             this.exit.Text = "Exit";
             this.exit.Click += new System.EventHandler(this.exit_Click);
             // 
-            // optionsToolStripMenuItem
+            // ratiobox
             // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dualmon});
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
+            this.ratiobox.DecimalPlaces = 2;
+            this.ratiobox.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.ratiobox.Location = new System.Drawing.Point(193, 83);
+            this.ratiobox.Name = "ratiobox";
+            this.ratiobox.Size = new System.Drawing.Size(44, 20);
+            this.ratiobox.TabIndex = 13;
+            this.ratiobox.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
             // 
-            // dualmon
+            // label1
             // 
-            this.dualmon.Checked = true;
-            this.dualmon.CheckOnClick = true;
-            this.dualmon.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.dualmon.Name = "dualmon";
-            this.dualmon.Size = new System.Drawing.Size(152, 22);
-            this.dualmon.Text = "Dual Monitor";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(101, 85);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(86, 13);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Ratio Tolerance:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(433, 115);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ratiobox);
             this.Controls.Add(this.timernum);
             this.Controls.Add(this.dirbutton);
             this.Controls.Add(this.gobutton);
@@ -274,6 +315,7 @@
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ratiobox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -301,9 +343,12 @@
         private System.Windows.Forms.ToolStripMenuItem exit;
         private System.Windows.Forms.ToolStripMenuItem traychange;
         private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem startmintool;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dualmon;
+        private System.Windows.Forms.ToolStripMenuItem screenslist;
+        private System.Windows.Forms.ToolStripMenuItem startmintool;
+        private System.Windows.Forms.NumericUpDown ratiobox;
+        private System.Windows.Forms.Label label1;
     }
 }
 
