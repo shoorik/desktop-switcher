@@ -55,6 +55,7 @@
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -138,7 +139,8 @@
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dualmon,
-            this.startmintool});
+            this.startmintool,
+            this.diagnosticToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -286,6 +288,13 @@
             this.label1.TabIndex = 14;
             this.label1.Text = "Ratio Tolerance:";
             // 
+            // diagnosticToolStripMenuItem
+            // 
+            this.diagnosticToolStripMenuItem.Name = "diagnosticToolStripMenuItem";
+            this.diagnosticToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.diagnosticToolStripMenuItem.Text = "Diagnostic";
+            this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -349,6 +358,7 @@
         private System.Windows.Forms.ToolStripMenuItem startmintool;
         private System.Windows.Forms.NumericUpDown ratiobox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem diagnosticToolStripMenuItem;
     }
 }
 
