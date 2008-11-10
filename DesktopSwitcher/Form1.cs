@@ -354,14 +354,40 @@ namespace DesktopSwitcher
                 return;
             File.Delete(dirtb.Text + "\\Background.bmp");
             string path = dirtb.Text + "\\Background.bmp";
-            Bitmap b = new Bitmap(file);
+            Bitmap b = new Bitmap(totalwidth,highestscreen);
+
+
             b.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
+            setwallpaper(path, 0, 0);
+        }
+
+        /// <summary>
+        /// puts picture in correct 
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="picin"></param>
+        /// <param name="screen"></param>
+        /// <returns></returns>
+        private Bitmap makepicture(Bitmap b, Bitmap picin, int screen)
+        {
+
+        }
+
+        /// <summary>
+        /// performs events necessary to change wallpaper
+        /// </summary>
+        /// <param name="path">path of new wallpaper</param>
+        /// <param name="tile">tile switch</param>
+        /// <param name="style">style switch, 2 = centered</param>
+        private void setwallpaper(string path, int tile, int style)
+        {
             RegistryKey ourkey = Registry.CurrentUser.OpenSubKey("Control Panel\\Desktop", true);
             ourkey.SetValue("Wallpaper", path);
-            ourkey.SetValue("TileWallpaper", "0");
-            ourkey.SetValue("WallpaperStyle", "0");
+            ourkey.SetValue("TileWallpaper", tile.ToString());
+            ourkey.SetValue("WallpaperStyle", style.ToString());
             ourkey.Close();
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_SENDWININICHANGE);
+
         }
 
         private void Form1_SizeChanged(object sender, EventArgs e)
