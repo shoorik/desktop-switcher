@@ -40,9 +40,9 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dualmon = new System.Windows.Forms.ToolStripMenuItem();
+            this.autostart = new System.Windows.Forms.ToolStripMenuItem();
             this.startmintool = new System.Windows.Forms.ToolStripMenuItem();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autostart = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.changebutton = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
@@ -58,6 +58,7 @@
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -143,6 +144,7 @@
             this.dualmon,
             this.autostart,
             this.startmintool,
+            this.subdirs,
             this.diagnosticToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
@@ -154,30 +156,30 @@
             this.dualmon.CheckOnClick = true;
             this.dualmon.CheckState = System.Windows.Forms.CheckState.Checked;
             this.dualmon.Name = "dualmon";
-            this.dualmon.Size = new System.Drawing.Size(176, 22);
+            this.dualmon.Size = new System.Drawing.Size(191, 22);
             this.dualmon.Text = "Dual Monitor";
             this.dualmon.Click += new System.EventHandler(this.dualmon_Click);
-            // 
-            // startmintool
-            // 
-            this.startmintool.CheckOnClick = true;
-            this.startmintool.Name = "startmintool";
-            this.startmintool.Size = new System.Drawing.Size(176, 22);
-            this.startmintool.Text = "Start Minimized";
-            // 
-            // diagnosticToolStripMenuItem
-            // 
-            this.diagnosticToolStripMenuItem.Name = "diagnosticToolStripMenuItem";
-            this.diagnosticToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.diagnosticToolStripMenuItem.Text = "Diagnostic";
-            this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
             // 
             // autostart
             // 
             this.autostart.CheckOnClick = true;
             this.autostart.Name = "autostart";
-            this.autostart.Size = new System.Drawing.Size(176, 22);
+            this.autostart.Size = new System.Drawing.Size(191, 22);
             this.autostart.Text = "Start Automatically";
+            // 
+            // startmintool
+            // 
+            this.startmintool.CheckOnClick = true;
+            this.startmintool.Name = "startmintool";
+            this.startmintool.Size = new System.Drawing.Size(191, 22);
+            this.startmintool.Text = "Start Minimized";
+            // 
+            // diagnosticToolStripMenuItem
+            // 
+            this.diagnosticToolStripMenuItem.Name = "diagnosticToolStripMenuItem";
+            this.diagnosticToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.diagnosticToolStripMenuItem.Text = "Diagnostic";
+            this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
             // 
             // screenslist
             // 
@@ -280,21 +282,20 @@
             // 
             // ratiobox
             // 
-            this.ratiobox.DecimalPlaces = 2;
-            this.ratiobox.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
             this.ratiobox.Location = new System.Drawing.Point(193, 83);
+            this.ratiobox.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
             this.ratiobox.Name = "ratiobox";
-            this.ratiobox.Size = new System.Drawing.Size(44, 20);
+            this.ratiobox.Size = new System.Drawing.Size(33, 20);
             this.ratiobox.TabIndex = 13;
             this.ratiobox.Value = new decimal(new int[] {
-            2,
+            20,
             0,
             0,
-            65536});
+            0});
             // 
             // label1
             // 
@@ -304,6 +305,13 @@
             this.label1.Size = new System.Drawing.Size(86, 13);
             this.label1.TabIndex = 14;
             this.label1.Text = "Ratio Tolerance:";
+            // 
+            // subdirs
+            // 
+            this.subdirs.CheckOnClick = true;
+            this.subdirs.Name = "subdirs";
+            this.subdirs.Size = new System.Drawing.Size(191, 22);
+            this.subdirs.Text = "Include Subdirectories";
             // 
             // Form1
             // 
@@ -322,10 +330,8 @@
             this.Controls.Add(this.timedenom);
             this.Controls.Add(this.dirtb);
             this.Controls.Add(this.label2);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Desktop Switcher";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -371,6 +377,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem diagnosticToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autostart;
+        private System.Windows.Forms.ToolStripMenuItem subdirs;
     }
 }
 

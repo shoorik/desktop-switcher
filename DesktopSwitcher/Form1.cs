@@ -54,6 +54,7 @@ namespace DesktopSwitcher
                 dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
                 ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
+                subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 try
                 {
                     for (int i = 0; i < heightfromtop.Length; i++)
@@ -126,6 +127,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("dualmon", dualmon.Checked);
             ourkey.SetValue("ratio", ratiobox.Value);
             ourkey.SetValue("autostart", autostart.Checked);
+            ourkey.SetValue("subdirs", subdirs.Checked);
             for (int i = 0; i < heightfromtop.Length; i++)
                 ourkey.SetValue("heightfromtop" + i, heightfromtop[i]);
             ourkey.Close();
@@ -203,7 +205,7 @@ namespace DesktopSwitcher
         /// <returns></returns>
         private bool sameratio(Bitmap b, int screen)
         {
-            return (getratio(b) >= getratio(screen) - (double)ratiobox.Value && getratio(b) <= getratio(screen) + (double)ratiobox.Value);
+            return (getratio(b) >= getratio(screen) - ((double)ratiobox.Value / 100 * getratio(screen)) && getratio(b) <= getratio(screen) + ((double)ratiobox.Value / 100 * getratio(screen)));
         }
 
         /// <summary>
@@ -215,7 +217,7 @@ namespace DesktopSwitcher
         /// <returns></returns>
         private bool sameratio(Bitmap b, double x, double y)
         {
-            return (getratio(b) >= x/y - (double)ratiobox.Value && getratio(b) <= x/y + (double)ratiobox.Value);
+            return (getratio(b) >= x/y - ((double)ratiobox.Value / 100 * x/y) && getratio(b) <= x/y + ((double)ratiobox.Value / 100 * x/y));
         }
         #endregion
 
@@ -240,17 +242,19 @@ namespace DesktopSwitcher
             File.Delete(dirtb.Text + "\\Background.bmp");
             string path = dirtb.Text + "\\Background.bmp";
             Bitmap final = new Bitmap(totalwidth, allheight);
-            string file = getrandompic(0);
-            Bitmap b = new Bitmap(dirtb.Text + "\\" + file);
+            string file = use;
+            if (use == "")
+                file = getrandompic(0);
+            Bitmap b = new Bitmap(file);
             final = makepicture(final, b, 0);
             for (int i = 1; i < desktops.Length; i++)
             {
                 string touse;
-                if(dualmon.Checked)
+                if(dualmon.Checked && use == "")
                     touse = getrandompic(totalwidth - usedwidth);
                 else
                     touse = file;
-                Bitmap b2 = new Bitmap(dirtb.Text + "\\" + touse);
+                Bitmap b2 = new Bitmap(touse);
                 final = makepicture(final, b2, i);
             }
             usedwidth = 0;
@@ -327,7 +331,10 @@ namespace DesktopSwitcher
             bool ok = true;
             ArrayList pics = new ArrayList();
             DirectoryInfo di = new DirectoryInfo(dirtb.Text);
-            foreach (FileInfo f in di.GetFiles())
+            FileInfo[] all = di.GetFiles();
+            if(subdirs.Checked)
+                all = di.GetFiles("*.*", SearchOption.AllDirectories);
+            foreach (FileInfo f in all)
                 if (exts.Contains(f.Extension.ToLower()))
                     pics.Add(f);
             FileInfo temp;
@@ -336,32 +343,22 @@ namespace DesktopSwitcher
             {
                 int c = new Random().Next(pics.Count);
                 temp = (FileInfo)pics[c];
-                b = new Bitmap(dirtb.Text + "\\" + temp.Name);
-                if (b.Width > maxwidth)
-                    ok = true;
+                b = new Bitmap(temp.FullName);
+                if (b.Width > maxwidth && !sameratio(b,maxwidth,allheight))
+                    ok = false;
                 else
-                    ok = false;
+                    ok = true;
                 if (maxwidth == 0)
-                    ok = false;
-            } while (ok);
-            return temp.Name;
+                    ok = true;
+            } while (!ok);
+            return temp.FullName;
         }
 
         private void choose_Click(object sender, EventArgs e)
         {
-            string file;
             getpicdialog.InitialDirectory = dirtb.Text;
             if (getpicdialog.ShowDialog() == DialogResult.OK)
-                file = getpicdialog.FileName;
-            else
-                return;
-            File.Delete(dirtb.Text + "\\Background.bmp");
-            string path = dirtb.Text + "\\Background.bmp";
-            Bitmap b = new Bitmap(totalwidth,highestscreen);
-
-
-            b.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
-            setwallpaper(path, 0, 0);
+                changepaper(getpicdialog.FileName);            
         }
 
         /// <summary>
@@ -404,18 +401,11 @@ namespace DesktopSwitcher
                     i++;
                     workingwidth = widthofscreens(screen, i);
                 }
-                    
-
-
-                //do
-                //{
-                //    if(i < desktops.Length )
-                //        i++;
-                //    workingwidth += desktops[i].Bounds.Width;
-                //} while (i < desktops.Length && picin.Width > workingwidth && !sameratio(picin, workingwidth, workingheight)) ;
-
                 if (!sameratio(picin, workingwidth, workingheight))
-                    workingwidth -= desktops[i-1].Bounds.Width;
+                    if(picin.Width >= workingwidth)
+                        action = 0;
+                    else
+                        workingwidth -= desktops[i-1].Bounds.Width;
                 else
                     action = 1;
             }
@@ -464,7 +454,6 @@ namespace DesktopSwitcher
             h.Save();
 
             usedwidth += workingwidth;
-
             return b;
         }
 
@@ -505,7 +494,6 @@ namespace DesktopSwitcher
         {
             if (browsedialog.ShowDialog() == DialogResult.OK)
             {
-                
                 DirectoryInfo di = new DirectoryInfo(browsedialog.SelectedPath);
                 if (checkforpics(di.GetFiles()))
                 {
