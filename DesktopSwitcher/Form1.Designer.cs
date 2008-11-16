@@ -57,11 +57,11 @@
             this.trayicon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.traychange = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentPicturesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.currentPicturesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -283,7 +283,7 @@
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 92);
             // 
             // traychange
             // 
@@ -292,6 +292,13 @@
             this.traychange.Size = new System.Drawing.Size(197, 22);
             this.traychange.Text = "Change Background";
             this.traychange.Click += new System.EventHandler(this.traychange_Click);
+            // 
+            // currentPicturesToolStripMenuItem1
+            // 
+            this.currentPicturesToolStripMenuItem1.Name = "currentPicturesToolStripMenuItem1";
+            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
+            this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
             // 
             // restoreToolStripMenuItem
             // 
@@ -332,13 +339,6 @@
             this.label1.Size = new System.Drawing.Size(86, 13);
             this.label1.TabIndex = 14;
             this.label1.Text = "Ratio Tolerance:";
-            // 
-            // currentPicturesToolStripMenuItem1
-            // 
-            this.currentPicturesToolStripMenuItem1.Name = "currentPicturesToolStripMenuItem1";
-            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
-            this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
-            this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
             // 
             // Form1
             // 

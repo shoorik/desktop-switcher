@@ -551,6 +551,8 @@ namespace DesktopSwitcher
         {
             this.Show();
             WindowState = FormWindowState.Normal;
+            this.Text = "Desktop Switcher";
+            this.ShowInTaskbar = true;
             trayicon.Visible = false;
 
         }
