@@ -44,7 +44,9 @@
             this.startmintool = new System.Windows.Forms.ToolStripMenuItem();
             this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showtips = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changebutton = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.browsedialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -59,6 +61,7 @@
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.currentPicturesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -115,7 +118,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem,
-            this.screenslist});
+            this.screenslist,
+            this.currentPicturesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -145,7 +149,8 @@
             this.autostart,
             this.startmintool,
             this.subdirs,
-            this.diagnosticToolStripMenuItem});
+            this.diagnosticToolStripMenuItem,
+            this.showtips});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -188,11 +193,25 @@
             this.diagnosticToolStripMenuItem.Text = "Diagnostic";
             this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
             // 
+            // showtips
+            // 
+            this.showtips.CheckOnClick = true;
+            this.showtips.Name = "showtips";
+            this.showtips.Size = new System.Drawing.Size(191, 22);
+            this.showtips.Text = "Show Balloon Tips";
+            // 
             // screenslist
             // 
             this.screenslist.Name = "screenslist";
             this.screenslist.Size = new System.Drawing.Size(57, 20);
             this.screenslist.Text = "Screens";
+            // 
+            // currentPicturesToolStripMenuItem
+            // 
+            this.currentPicturesToolStripMenuItem.Name = "currentPicturesToolStripMenuItem";
+            this.currentPicturesToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
+            this.currentPicturesToolStripMenuItem.Text = "Current Pictures";
+            this.currentPicturesToolStripMenuItem.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem_Click);
             // 
             // changebutton
             // 
@@ -260,10 +279,11 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.traychange,
+            this.currentPicturesToolStripMenuItem1,
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 114);
             // 
             // traychange
             // 
@@ -312,6 +332,13 @@
             this.label1.Size = new System.Drawing.Size(86, 13);
             this.label1.TabIndex = 14;
             this.label1.Text = "Ratio Tolerance:";
+            // 
+            // currentPicturesToolStripMenuItem1
+            // 
+            this.currentPicturesToolStripMenuItem1.Name = "currentPicturesToolStripMenuItem1";
+            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
+            this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
             // 
             // Form1
             // 
@@ -378,6 +405,9 @@
         private System.Windows.Forms.ToolStripMenuItem diagnosticToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autostart;
         private System.Windows.Forms.ToolStripMenuItem subdirs;
+        private System.Windows.Forms.ToolStripMenuItem currentPicturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showtips;
+        private System.Windows.Forms.ToolStripMenuItem currentPicturesToolStripMenuItem1;
     }
 }
 

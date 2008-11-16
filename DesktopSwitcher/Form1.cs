@@ -32,6 +32,8 @@ namespace DesktopSwitcher
         int highestscreen = 0;
         int[] heightfromtop = new int[10];
         int usedwidth = 0;
+        string pics = "";
+        bool usedpic = true;
 
         public Form1()
         {
@@ -55,6 +57,7 @@ namespace DesktopSwitcher
                 ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
+                showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
                 try
                 {
                     for (int i = 0; i < heightfromtop.Length; i++)
@@ -128,6 +131,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("ratio", ratiobox.Value);
             ourkey.SetValue("autostart", autostart.Checked);
             ourkey.SetValue("subdirs", subdirs.Checked);
+            ourkey.SetValue("balloon", showtips.Checked);
             for (int i = 0; i < heightfromtop.Length; i++)
                 ourkey.SetValue("heightfromtop" + i, heightfromtop[i]);
             ourkey.Close();
@@ -245,6 +249,7 @@ namespace DesktopSwitcher
             string file = use;
             if (use == "")
                 file = getrandompic(0);
+            pics = "Screen 1: " + file;
             Bitmap b = new Bitmap(file);
             makepicture(ref final,ref b, 0);
             for (int i = 1; i < desktops.Length; i++)
@@ -254,13 +259,22 @@ namespace DesktopSwitcher
                     touse = getrandompic(totalwidth - usedwidth);
                 else
                     touse = file;
+                
                 Bitmap b2 = new Bitmap(touse);
                 makepicture(ref final,ref b2, i);
+                if (usedpic)
+                    pics += "\nScreen " + (i+1) + ": " + touse;
+                usedpic = true;
                 b2.Dispose();
             }
             usedwidth = 0;
             final.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
             setwallpaper(path, 1, 0);
+            if (showtips.Checked)
+            {
+                trayicon.BalloonTipText = pics;
+                trayicon.ShowBalloonTip(10000,"", pics, ToolTipIcon.Info);
+            }
             final.Dispose();
             b.Dispose();
         }
@@ -354,9 +368,12 @@ namespace DesktopSwitcher
             int action = 0;
             int workingwidth = desktops[screen].Bounds.Width;
             int workingheight = desktops[screen].Bounds.Height;
-            
-            if (usedwidth >= widthofscreens(0,screen))  //if the screen has already been filled over, return the bitmap back unchanged
+
+            if (usedwidth >= widthofscreens(0, screen))  //if the screen has already been filled over, return the bitmap back unchanged
+            {
+                usedpic = false;
                 return;
+            }
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
             if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen) && desktops.Length > 1)   
             {
@@ -556,5 +573,15 @@ namespace DesktopSwitcher
             diagnostic();
         }
         #endregion
+
+        private void currentPicturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(pics, "Current Backgrounds");
+        }
+
+        private void currentPicturesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(pics, "Current Pictures");            
+        }
     }
 }
