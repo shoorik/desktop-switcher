@@ -28,7 +28,7 @@ namespace DesktopSwitcher
         int denomindex = 1;                                                         //
         Screen[] desktops = Screen.AllScreens;  //array of all screens on system
         int totalwidth; //total width of all screens
-        int allheight;
+        int allheight = 0;
         int highestscreen = 0;
         int[] heightfromtop = new int[10];
         int usedwidth = 0;
@@ -182,7 +182,7 @@ namespace DesktopSwitcher
         /// </summary>
         /// <param name="b">bitmap to get ratio of</param>
         /// <returns></returns>
-        private double getratio(Bitmap b)
+        private double getratio(ref Bitmap b)
         {
             return (double)b.Width / (double)b.Height;
         }
@@ -203,9 +203,9 @@ namespace DesktopSwitcher
         /// <param name="b">bitmap to test</param>
         /// <param name="screen">index of the screen in the desktop array</param>
         /// <returns></returns>
-        private bool sameratio(Bitmap b, int screen)
+        private bool sameratio(ref Bitmap b, int screen)
         {
-            return (getratio(b) >= getratio(screen) - ((double)ratiobox.Value / 100 * getratio(screen)) && getratio(b) <= getratio(screen) + ((double)ratiobox.Value / 100 * getratio(screen)));
+            return (getratio(ref b) >= getratio(screen) - ((double)ratiobox.Value / 100 * getratio(screen)) && getratio(ref b) <= getratio(screen) + ((double)ratiobox.Value / 100 * getratio(screen)));
         }
 
         /// <summary>
@@ -215,9 +215,9 @@ namespace DesktopSwitcher
         /// <param name="x">width dimension</param>
         /// <param name="y">height dimension</param>
         /// <returns></returns>
-        private bool sameratio(Bitmap b, double x, double y)
+        private bool sameratio(ref Bitmap b, double x, double y)
         {
-            return (getratio(b) >= x/y - ((double)ratiobox.Value / 100 * x/y) && getratio(b) <= x/y + ((double)ratiobox.Value / 100 * x/y));
+            return (getratio(ref b) >= x/y - ((double)ratiobox.Value / 100 * x/y) && getratio(ref b) <= x/y + ((double)ratiobox.Value / 100 * x/y));
         }
         #endregion
 
@@ -246,7 +246,7 @@ namespace DesktopSwitcher
             if (use == "")
                 file = getrandompic(0);
             Bitmap b = new Bitmap(file);
-            final = makepicture(final, b, 0);
+            makepicture(ref final,ref b, 0);
             for (int i = 1; i < desktops.Length; i++)
             {
                 string touse;
@@ -255,45 +255,14 @@ namespace DesktopSwitcher
                 else
                     touse = file;
                 Bitmap b2 = new Bitmap(touse);
-                final = makepicture(final, b2, i);
+                makepicture(ref final,ref b2, i);
+                b2.Dispose();
             }
             usedwidth = 0;
             final.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
             setwallpaper(path, 1, 0);
-
-            #region oldstuff
-            //if (b.Width < totalwidth && use == "" && dualmon.Checked)
-            //{
-            //    for (int i = 1; i < desktops.Length; i++)
-            //    {
-            //        Bitmap temp = b;
-            //        Bitmap b2 = new Bitmap(dirtb.Text + "\\" + getrandompic(desktops[i].Bounds.Width));
-            //        Graphics g;
-            //        b = new Bitmap(temp.Width + b2.Width, temp.Height);
-            //        g = Graphics.FromImage(b);
-            //        g.DrawImage(temp, 0, 0, temp.Width, temp.Height);
-            //        g.DrawImage(b2, temp.Width + 1, 0, b2.Width, b2.Height);
-            //        g.Save();
-            //    }
-            //}
-            //b.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
-            //RegistryKey ourkey = Registry.CurrentUser.OpenSubKey("Control Panel\\Desktop", true);
-            //ourkey.SetValue("Wallpaper", path);
-            //ourkey.SetValue("TileWallpaper", "0");
-            //ourkey.SetValue("WallpaperStyle", "0");
-            //if (use == "" || use != "" && b.Width > desktops[0].Bounds.Width)
-            //{
-            //    ourkey.SetValue("TileWallpaper", "1");
-            //    ourkey.SetValue("WallpaperStyle", "0");
-            //}
-            //else if (sameratio(b,0)) 
-            //{
-            //    ourkey.SetValue("TileWallpaper", "0");
-            //    ourkey.SetValue("WallpaperStyle", "2");
-            //}
-            //ourkey.Close();
-            //SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path,SPIF_SENDWININICHANGE);
-#endregion
+            final.Dispose();
+            b.Dispose();
         }
 
         /// <summary>
@@ -304,22 +273,19 @@ namespace DesktopSwitcher
         /// <param name="ScaleFactorX">x scale</param>
         /// <param name="ScaleFactorY">y scale</param>
         /// <returns></returns>
-        public static Bitmap scale(Bitmap Bitmap, int scalex, int scaley)
+        public static void scale(ref Bitmap Bitmap, ref Bitmap scaledBitmap, int scalex, int scaley)
         {
-            Bitmap scaledBitmap = new Bitmap(scalex, scaley);
+            scaledBitmap = new Bitmap(scalex, scaley);
 
             // Scale the bitmap in high quality mode.
-            using (Graphics gr = Graphics.FromImage(scaledBitmap))
-            {
-                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                gr.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                gr.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                gr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-
-                gr.DrawImage(Bitmap, new Rectangle(0, 0, scalex, scaley), new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), GraphicsUnit.Pixel);
-            }
-
-            return scaledBitmap;
+            Graphics gr = Graphics.FromImage(scaledBitmap);
+            gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            gr.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            gr.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            gr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            gr.DrawImage(Bitmap, new Rectangle(0, 0, scalex, scaley), new Rectangle(0, 0, Bitmap.Width, Bitmap.Height), GraphicsUnit.Pixel);
+            gr.Save();
+            gr.Dispose();
         }
 
         /// <summary>
@@ -335,7 +301,7 @@ namespace DesktopSwitcher
             if(subdirs.Checked)
                 all = di.GetFiles("*.*", SearchOption.AllDirectories);
             foreach (FileInfo f in all)
-                if (exts.Contains(f.Extension.ToLower()))
+                if (exts.Contains(f.Extension.ToLower()) && f.Extension != "")
                     pics.Add(f);
             FileInfo temp;
             Bitmap b;
@@ -344,12 +310,13 @@ namespace DesktopSwitcher
                 int c = new Random().Next(pics.Count);
                 temp = (FileInfo)pics[c];
                 b = new Bitmap(temp.FullName);
-                if (b.Width > maxwidth && !sameratio(b,maxwidth,allheight))
+                if (b.Width > maxwidth && !sameratio(ref b,maxwidth,allheight))
                     ok = false;
                 else
                     ok = true;
                 if (maxwidth == 0)
                     ok = true;
+                b.Dispose();
             } while (!ok);
             return temp.FullName;
         }
@@ -382,26 +349,25 @@ namespace DesktopSwitcher
         /// <param name="picin">the picture to add to the wallpaper</param>
         /// <param name="screen">the screen to start adding to</param>
         /// <returns>a bitmap with new picture added into it</returns>
-        private Bitmap makepicture(Bitmap c, Bitmap picin, int screen)
+        private void makepicture(ref Bitmap b, ref Bitmap picin, int screen)
         {
-            Bitmap b = c;
             int action = 0;
             int workingwidth = desktops[screen].Bounds.Width;
             int workingheight = desktops[screen].Bounds.Height;
             
             if (usedwidth >= widthofscreens(0,screen))  //if the screen has already been filled over, return the bitmap back unchanged
-                return b;
+                return;
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
-            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(picin, screen) && desktops.Length > 1)   
+            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen) && desktops.Length > 1)   
             {
                 int i = screen;
 
-                while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(picin, workingwidth, workingheight))
+                while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight))
                 {
                     i++;
                     workingwidth = widthofscreens(screen, i);
                 }
-                if (!sameratio(picin, workingwidth, workingheight))
+                if (!sameratio(ref picin, workingwidth, workingheight))
                     if(picin.Width >= workingwidth)
                         action = 0;
                     else
@@ -410,7 +376,7 @@ namespace DesktopSwitcher
                     action = 1;
             }
 
-            if(sameratio(picin, workingwidth, workingheight))
+            if(sameratio(ref picin, workingwidth, workingheight))
                 action = 1;
 
             int realheight = picin.Height;
@@ -436,25 +402,34 @@ namespace DesktopSwitcher
                 }
                 Graphics g;
                 g = Graphics.FromImage(temp);
-                g.DrawImage(scale(picin,realwidth,realheight), xpad, ypad, realwidth, realheight);
+                Bitmap todraw = new Bitmap(1,1);
+                scale(ref picin, ref todraw, realwidth,realheight);
+                g.DrawImage(todraw, xpad, ypad, realwidth, realheight);
+                todraw.Dispose();
                 g.Save();
+                g.Dispose();
             }
 
             else if (action == 1)    //stretched (stretched slightly to fill the entire screen) 
             {                       //tiled (no change in size, picture just added in)
                 Graphics g;
                 g = Graphics.FromImage(temp);
-                g.DrawImage(scale(picin,workingwidth,workingheight), 0, 0, workingwidth, workingheight);
+                Bitmap todraw = new Bitmap(1,1);
+                scale(ref picin,ref todraw, workingwidth,workingheight);
+                g.DrawImage(todraw, 0, 0, workingwidth, workingheight);
+                todraw.Dispose();
                 g.Save();
+                g.Dispose();
             }
 
             Graphics h;
             h = Graphics.FromImage(b);
             h.DrawImage(temp, usedwidth, heightfromtop[screen], workingwidth, workingheight);
             h.Save();
+            h.Dispose();
 
+            temp.Dispose();
             usedwidth += workingwidth;
-            return b;
         }
 
         /// <summary>

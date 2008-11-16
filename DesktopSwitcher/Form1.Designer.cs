@@ -42,6 +42,7 @@
             this.dualmon = new System.Windows.Forms.ToolStripMenuItem();
             this.autostart = new System.Windows.Forms.ToolStripMenuItem();
             this.startmintool = new System.Windows.Forms.ToolStripMenuItem();
+            this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.changebutton = new System.Windows.Forms.Button();
@@ -58,7 +59,6 @@
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -173,6 +173,13 @@
             this.startmintool.Name = "startmintool";
             this.startmintool.Size = new System.Drawing.Size(191, 22);
             this.startmintool.Text = "Start Minimized";
+            // 
+            // subdirs
+            // 
+            this.subdirs.CheckOnClick = true;
+            this.subdirs.Name = "subdirs";
+            this.subdirs.Size = new System.Drawing.Size(191, 22);
+            this.subdirs.Text = "Include Subdirectories";
             // 
             // diagnosticToolStripMenuItem
             // 
@@ -305,13 +312,6 @@
             this.label1.Size = new System.Drawing.Size(86, 13);
             this.label1.TabIndex = 14;
             this.label1.Text = "Ratio Tolerance:";
-            // 
-            // subdirs
-            // 
-            this.subdirs.CheckOnClick = true;
-            this.subdirs.Name = "subdirs";
-            this.subdirs.Size = new System.Drawing.Size(191, 22);
-            this.subdirs.Text = "Include Subdirectories";
             // 
             // Form1
             // 
