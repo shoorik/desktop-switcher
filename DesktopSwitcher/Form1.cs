@@ -115,6 +115,7 @@ namespace DesktopSwitcher
 
                 t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
             }
+            screenslist.DropDownItems.Clear();
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
         }
 
@@ -142,6 +143,8 @@ namespace DesktopSwitcher
         /// </summary>
         private void diagnostic()
         {
+            desktops = Screen.AllScreens;
+            getscreens();
             Bitmap b = new Bitmap(10, 10);
             for (int i = 0; i < 10; i++)
                 for (int j = 0; j < 10; j++)
