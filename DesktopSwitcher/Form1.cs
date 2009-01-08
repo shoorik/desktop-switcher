@@ -167,11 +167,14 @@ namespace DesktopSwitcher
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_SENDWININICHANGE);
             File.Delete("c:\\schraitletemp.bmp");
             heightfromtop = new int[10];
-            for (int i = 0; i < test.Height; i++)
+            //check to see if a screen is a long way down, if it is, identify whats on top of it, find height from base of second layer
+            for (int i = 0; i < test.Height; i++)   //starts at i and moves down until doesn't find black and sets that as heightfromtop
                 if (test.GetPixel(50, i) == Color.FromArgb(0, 0, 0))
                     heightfromtop[0] = i;
                 else
                     i = test.Height;
+            //you know how wide in the screen is, so you can compare widths to find screens on top,
+            //assume screens on top are in  order, like on bottom, find last screen on bottom and continue order on top
             for (int i = 1; i < desktops.Length; i++)
                 for (int j = 0; j < test.Height; j++)
                     if (test.GetPixel(desktops[i - 1].Bounds.Width + 50, j) == Color.FromArgb(0,0,0))
