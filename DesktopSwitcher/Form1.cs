@@ -174,13 +174,19 @@ namespace DesktopSwitcher
                 else
                     i = test.Height;
             //you know how wide in the screen is, so you can compare widths to find screens on top,
+            //need to be able to find height from separation line of screens
+            //find how many screens on bottom, find highest of those, subtract from that
             //assume screens on top are in  order, like on bottom, find last screen on bottom and continue order on top
+            //make it work for 2x2 block
+            //can this be recursive to handle 3 layers?
             for (int i = 1; i < desktops.Length; i++)
                 for (int j = 0; j < test.Height; j++)
                     if (test.GetPixel(desktops[i - 1].Bounds.Width + 50, j) == Color.FromArgb(0,0,0))
                         heightfromtop[i] = j;
                     else
                         j = test.Height;
+            foreach (int i in heightfromtop)
+                if(i > 
             ourkey.Close();
             regsave();
             findallheight();
