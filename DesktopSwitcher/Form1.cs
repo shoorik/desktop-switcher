@@ -475,7 +475,6 @@ namespace DesktopSwitcher
             ourkey.SetValue("WallpaperStyle", style.ToString());
             ourkey.Close();
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_SENDWININICHANGE);
-
         }
 
         #region events

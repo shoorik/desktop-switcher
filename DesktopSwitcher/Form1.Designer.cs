@@ -330,6 +330,7 @@
             0,
             0,
             0});
+            this.ratiobox.ValueChanged += new System.EventHandler(this.ratiobox_ValueChanged);
             // 
             // label1
             // 
