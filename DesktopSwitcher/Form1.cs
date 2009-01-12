@@ -24,9 +24,10 @@ namespace DesktopSwitcher
 
         string exts = ".jpg.jpeg.bmp.png";
         string[] denoms = new string[] { "Seconds", "Minutes", "Hours", "Days" };   //for interval settings
-        int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //
-        int denomindex = 1;                                                         //
-        Screen[] desktops = Screen.AllScreens;  //array of all screens on system
+        int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //                                                        //
+        Screen[] desktops = Screen.AllScreens; //array of all screens on system
+        Screen[] desktops2;
+        Screen[] ordered = Screen.AllScreens;
         int totalwidth; //total width of all screens
         int allheight = 0;
         int highestscreen = 0;
@@ -34,6 +35,7 @@ namespace DesktopSwitcher
         int usedwidth = 0;
         string pics = "";
         bool usedpic = true;
+        int farthestleft = 0;
 
         public Form1()
         {
@@ -42,9 +44,11 @@ namespace DesktopSwitcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            desktops2 = desktops;
             dualmon.Checked = desktops.Length > 1;
             timer.Tick += new EventHandler(timer_Tick);
             trayicon.Icon = this.Icon;
+            denombox.SelectedIndex = 1;
             try
             {
                 RegistryKey ourkey = Registry.Users;
@@ -52,7 +56,7 @@ namespace DesktopSwitcher
                 dirtb.Text = (string)ourkey.GetValue("dir");
                 timernum.Value = decimal.Parse((string)ourkey.GetValue("interval"));
                 startmintool.Checked = bool.Parse((string)ourkey.GetValue("startmin"));
-                denomindex = (int)ourkey.GetValue("denomindex");
+                denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
                 dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
                 ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
@@ -70,7 +74,6 @@ namespace DesktopSwitcher
 
             if (startmintool.Checked)
                 this.WindowState = FormWindowState.Minimized;
-            timedenom.Text = denoms[denomindex];
             getscreens();
             if (autostart.Checked)
                 start_timer();
@@ -90,11 +93,14 @@ namespace DesktopSwitcher
                 if (desktops[i].Bounds.Height + heightfromtop[i] > allheight)
                     allheight = desktops[i].Bounds.Height + heightfromtop[i];
         }
+
         /// <summary>
         /// counts number of screens and their sizes, displays them in menu bar, saves them in desktops array
         /// </summary>
         private void getscreens()
         {
+            totalwidth = 0;
+            int[] order = new int[10];
             ToolStripMenuItem[] t = new ToolStripMenuItem[desktops.Length];
             for (int i = 0; i < desktops.Length; i++)
             {
@@ -102,6 +108,8 @@ namespace DesktopSwitcher
                 findallheight();
                 if (desktops[i].Bounds.Height > highestscreen)
                     highestscreen = desktops[i].Bounds.Height;
+                if (desktops[i].WorkingArea.X < farthestleft)
+                    farthestleft = desktops[i].WorkingArea.X;
                 t[i] = new ToolStripMenuItem();
                 ToolStripMenuItem[] props = new ToolStripMenuItem[3];
                 for (int j = 0; j < props.Length; j++)
@@ -112,8 +120,14 @@ namespace DesktopSwitcher
                 props[0].Text = "Width:  " + desktops[i].Bounds.Width.ToString();
                 props[1].Text = "Height: " + desktops[i].Bounds.Height.ToString();
                 props[2].Text = "Ratio:  " + getratio(i).ToString();
-
                 t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
+
+            }
+            int wide = farthestleft;
+            for (int i = 0; i < desktops.Length; i++)
+            {
+                desktops[i] = Screen.FromPoint(new Point(wide, 0));
+                wide += desktops[i].Bounds.Width;
             }
             screenslist.DropDownItems.Clear();
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
@@ -127,7 +141,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("dir", dirtb.Text);
             ourkey.SetValue("interval", timernum.Value);
             ourkey.SetValue("startmin", startmintool.Checked);
-            ourkey.SetValue("denomindex", denomindex);
+            ourkey.SetValue("denomindex", denombox.SelectedIndex);
             ourkey.SetValue("dualmon", dualmon.Checked);
             ourkey.SetValue("ratio", ratiobox.Value);
             ourkey.SetValue("autostart", autostart.Checked);
@@ -143,7 +157,7 @@ namespace DesktopSwitcher
         /// </summary>
         private void diagnostic()
         {
-            desktops = Screen.AllScreens;
+            desktops = desktops2;
             getscreens();
             Bitmap b = new Bitmap(10, 10);
             for (int i = 0; i < 10; i++)
@@ -167,29 +181,28 @@ namespace DesktopSwitcher
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_SENDWININICHANGE);
             File.Delete("c:\\schraitletemp.bmp");
             heightfromtop = new int[10];
-            //check to see if a screen is a long way down, if it is, identify whats on top of it, find height from base of second layer
-            for (int i = 0; i < test.Height; i++)   //starts at i and moves down until doesn't find black and sets that as heightfromtop
+            for (int i = 0; i < test.Height; i++)
                 if (test.GetPixel(50, i) == Color.FromArgb(0, 0, 0))
                     heightfromtop[0] = i;
                 else
                     i = test.Height;
-            //you know how wide in the screen is, so you can compare widths to find screens on top,
-            //need to be able to find height from separation line of screens
-            //find how many screens on bottom, find highest of those, subtract from that
-            //assume screens on top are in  order, like on bottom, find last screen on bottom and continue order on top
-            //make it work for 2x2 block
-            //can this be recursive to handle 3 layers?
             for (int i = 1; i < desktops.Length; i++)
                 for (int j = 0; j < test.Height; j++)
                     if (test.GetPixel(desktops[i - 1].Bounds.Width + 50, j) == Color.FromArgb(0,0,0))
                         heightfromtop[i] = j;
                     else
                         j = test.Height;
-            foreach (int i in heightfromtop)
-                if(i > 
             ourkey.Close();
             regsave();
             findallheight();
+        }
+
+        private int findscreen(Screen test)
+        {
+            for (int i = 0; i < desktops.Length; i++)
+                if (test.Equals(desktops[i]))
+                    return i;
+            return -1;
         }
 
         #region ratiostuff
@@ -279,8 +292,25 @@ namespace DesktopSwitcher
                 usedpic = true;
                 b2.Dispose();
             }
-            usedwidth = 0;
-            final.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
+            usedwidth = 0;   
+            Bitmap newfinal = new Bitmap(final.Width, final.Height);         
+            if(farthestleft < 0)
+            {
+                Bitmap right = final.Clone(new Rectangle((farthestleft * -1),0,final.Width-(farthestleft * -1),final.Height),final.PixelFormat);
+                Bitmap left = final.Clone(new Rectangle(0,0,(farthestleft * -1),final.Height),final.PixelFormat);
+                
+                Graphics h;
+                h = Graphics.FromImage(newfinal);
+                h.DrawImage(right, 0, 0, right.Width, right.Height);
+                h.DrawImage(left, right.Width,0,left.Width,left.Height);
+                h.Save();
+                h.Dispose();
+                right.Dispose();
+                left.Dispose();
+                newfinal.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
+            }
+            else
+                final.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
             setwallpaper(path, 1, 0);
             if (showtips.Checked)
             {
@@ -288,6 +318,7 @@ namespace DesktopSwitcher
                 trayicon.ShowBalloonTip(10000,"", pics, ToolTipIcon.Info);
             }
             final.Dispose();
+            newfinal.Dispose();
             b.Dispose();
         }
 
@@ -317,7 +348,7 @@ namespace DesktopSwitcher
         /// <summary>
         /// gets random picture from directory based on given max width, if picture is close enough to max width that the scaling will be correct, picture is returned
         /// </summary>
-        /// <param name="maxwidth">maximum picture width that is returned any size = 0</param>
+        /// <param name="maxwidth">maximum picture width that is returned; any size = 0</param>
         private string getrandompic(int maxwidth)
         {
             bool ok = true;
@@ -400,7 +431,7 @@ namespace DesktopSwitcher
                     if(picin.Width >= workingwidth)
                         action = 0;
                     else
-                        workingwidth -= desktops[i-1].Bounds.Width;
+                        workingwidth -= desktops[i].Bounds.Width;
                 else
                     action = 1;
             }
@@ -475,6 +506,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("WallpaperStyle", style.ToString());
             ourkey.Close();
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_SENDWININICHANGE);
+
         }
 
         #region events
@@ -528,7 +560,7 @@ namespace DesktopSwitcher
 
         private void start_timer()
         {
-            timer.Interval = decimal.ToInt32(timernum.Value * milidenoms[denomindex]);
+            timer.Interval = decimal.ToInt32(timernum.Value * milidenoms[denombox.SelectedIndex]);
             timer.Start();
             gobutton.Text = "Stop";
         }
@@ -568,13 +600,6 @@ namespace DesktopSwitcher
 
         }
 
-        private void timedenom_Click(object sender, EventArgs e)
-        {
-            if (++denomindex == 4)
-                denomindex = 0;
-            timedenom.Text = denoms[denomindex];
-        }
-
         private void dualmon_Click(object sender, EventArgs e)
         {
             if (desktops.Length < 2)
@@ -595,6 +620,22 @@ namespace DesktopSwitcher
         private void currentPicturesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             MessageBox.Show(pics, "Current Pictures");            
+        }
+
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] dropped = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4)))
+                changepaper(dropped[0]);
         }
     }
 }

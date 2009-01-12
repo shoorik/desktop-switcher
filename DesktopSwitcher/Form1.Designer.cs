@@ -34,7 +34,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.dirbutton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.timedenom = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +61,7 @@
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.denombox = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -102,16 +102,6 @@
             this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 5;
             this.label3.Text = "Interval:";
-            // 
-            // timedenom
-            // 
-            this.timedenom.AutoSize = true;
-            this.timedenom.Location = new System.Drawing.Point(143, 60);
-            this.timedenom.Name = "timedenom";
-            this.timedenom.Size = new System.Drawing.Size(44, 13);
-            this.timedenom.TabIndex = 7;
-            this.timedenom.Text = "Minutes";
-            this.timedenom.Click += new System.EventHandler(this.timedenom_Click);
             // 
             // menuStrip1
             // 
@@ -330,7 +320,6 @@
             0,
             0,
             0});
-            this.ratiobox.ValueChanged += new System.EventHandler(this.ratiobox_ValueChanged);
             // 
             // label1
             // 
@@ -341,12 +330,29 @@
             this.label1.TabIndex = 14;
             this.label1.Text = "Ratio Tolerance:";
             // 
+            // denombox
+            // 
+            this.denombox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.denombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.denombox.FormattingEnabled = true;
+            this.denombox.Items.AddRange(new object[] {
+            "Seconds",
+            "Minutes",
+            "Hours",
+            "Days"});
+            this.denombox.Location = new System.Drawing.Point(146, 57);
+            this.denombox.Name = "denombox";
+            this.denombox.Size = new System.Drawing.Size(80, 21);
+            this.denombox.TabIndex = 15;
+            // 
             // Form1
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(433, 115);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.denombox);
             this.Controls.Add(this.ratiobox);
             this.Controls.Add(this.timernum);
             this.Controls.Add(this.dirbutton);
@@ -355,7 +361,6 @@
             this.Controls.Add(this.changebutton);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.timedenom);
             this.Controls.Add(this.dirtb);
             this.Controls.Add(this.label2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -364,7 +369,9 @@
             this.Text = "Desktop Switcher";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).EndInit();
@@ -381,7 +388,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button dirbutton;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label timedenom;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Button changebutton;
         private System.Windows.Forms.Timer timer;
@@ -409,6 +415,7 @@
         private System.Windows.Forms.ToolStripMenuItem currentPicturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showtips;
         private System.Windows.Forms.ToolStripMenuItem currentPicturesToolStripMenuItem1;
+        private System.Windows.Forms.ComboBox denombox;
     }
 }
 
