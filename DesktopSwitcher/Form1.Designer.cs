@@ -62,6 +62,7 @@
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.denombox = new System.Windows.Forms.ComboBox();
+            this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -109,6 +110,7 @@
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.screenslist,
+            this.customizeToolStripMenuItem,
             this.currentPicturesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -345,6 +347,13 @@
             this.denombox.Size = new System.Drawing.Size(80, 21);
             this.denombox.TabIndex = 15;
             // 
+            // customizeToolStripMenuItem
+            // 
+            this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
+            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.customizeToolStripMenuItem.Text = "Customize";
+            this.customizeToolStripMenuItem.Click += new System.EventHandler(this.customizeToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -416,6 +425,7 @@
         private System.Windows.Forms.ToolStripMenuItem showtips;
         private System.Windows.Forms.ToolStripMenuItem currentPicturesToolStripMenuItem1;
         private System.Windows.Forms.ComboBox denombox;
+        private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
     }
 }
 

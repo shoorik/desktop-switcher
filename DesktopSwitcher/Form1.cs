@@ -33,6 +33,7 @@ namespace DesktopSwitcher
         bool usedpic = true;
         int farthestleft = 0;
         string lastpic = "";
+        bool selecting = false;
 
         public Form1()
         {
@@ -220,28 +221,35 @@ namespace DesktopSwitcher
             string path = dirtb.Text + "\\Background.bmp";
             File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
-            pics = "";
-            //if (use == "")
-            //    file = getrandompic(0);
-            //pics = "Screen 1: " + file;
-            //Bitmap b = new Bitmap(file);
-            //makepicture(ref final,ref b, 0);
-            for (int i = 0; i < desktops.Length; i++)
+            string file = use;
+            if (use == "")
+                file = getrandompic(totalwidth - usedwidth);
+            pics = "Screen 1: " + file;
+            Bitmap b = new Bitmap(file);
+            int i = 1 + makepicture(ref final, ref b, 0);
+            for (i = i; i < desktops.Length; i++)
             {
-                string touse;
-                if(use == "")
-                    touse = getrandompic(totalwidth - usedwidth);
+                string touse = "";
+                if (selecting)
+                {
+                    MessageBox.Show(pics + "\n\nChoose for screen " + (i+1).ToString());
+                    getpicdialog.InitialDirectory = dirtb.Text;
+                    if (getpicdialog.ShowDialog() == DialogResult.OK)
+                        touse = getpicdialog.FileName;
+                }
                 else
-                    touse = use;
-
-                if (!dualmon.Checked && i > 0)
-                    touse = lastpic;
+                {
+                    if (dualmon.Checked && use == "")
+                        touse = getrandompic(totalwidth - usedwidth);
+                    else
+                        touse = use;
+                }
                 lastpic = touse;
                 
                 Bitmap b2 = new Bitmap(touse);
-                makepicture(ref final,ref b2, i);
+                i = 1 + makepicture(ref final,ref b2, i);
                 if (usedpic)
-                    pics += "Screen " + (i+1) + ": " + touse + "\n";
+                    pics += "\nScreen " + (i+1) + ": " + touse;
                 usedpic = true;
                 b2.Dispose();
                 if (usedwidth == totalwidth)
@@ -383,22 +391,21 @@ namespace DesktopSwitcher
         /// <param name="picin">the picture to add to the wallpaper</param>
         /// <param name="screen">the screen to start adding to</param>
         /// <returns>a bitmap with new picture added into it</returns>
-        private void makepicture(ref Bitmap b, ref Bitmap picin, int screen)
+        private int makepicture(ref Bitmap b, ref Bitmap picin, int screen)
         {
             int action = 0;
+            int i = screen;
             int workingwidth = desktops[screen].Bounds.Width;
             int workingheight = desktops[screen].Bounds.Height;
 
             if (usedwidth >= widthofscreens(0, screen))  //if the screen has already been filled over, return the bitmap back unchanged
             {
                 usedpic = false;
-                return;
+                return screen;
             }
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
             if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen) && desktops.Length > 1)   
             {
-                int i = screen;
-
                 while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight))
                 {
                     i++;
@@ -468,6 +475,7 @@ namespace DesktopSwitcher
 
             temp.Dispose();
             usedwidth += workingwidth;
+            return i;
         }
 
         /// <summary>
@@ -620,6 +628,16 @@ namespace DesktopSwitcher
 
             if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4).ToLower()))
                 changepaper(dropped[0]);
+        }
+
+        private void customizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            selecting = true;
+            getpicdialog.InitialDirectory = dirtb.Text;
+            if (getpicdialog.ShowDialog() == DialogResult.OK)
+                changepaper(getpicdialog.FileName);
+            selecting = false;
+
         }
     }
 }
