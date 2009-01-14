@@ -220,7 +220,6 @@ namespace DesktopSwitcher
             string path = dirtb.Text + "\\Background.bmp";
             File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
-            string file = use;
             pics = "";
             //if (use == "")
             //    file = getrandompic(0);
@@ -230,16 +229,19 @@ namespace DesktopSwitcher
             for (int i = 0; i < desktops.Length; i++)
             {
                 string touse;
-                if(dualmon.Checked && use == "")
+                if(use == "")
                     touse = getrandompic(totalwidth - usedwidth);
                 else
-                    touse = file;
+                    touse = use;
+
+                if (!dualmon.Checked && i > 0)
+                    touse = lastpic;
                 lastpic = touse;
                 
                 Bitmap b2 = new Bitmap(touse);
                 makepicture(ref final,ref b2, i);
                 if (usedpic)
-                    pics += "\nScreen " + (i+1) + ": " + touse;
+                    pics += "Screen " + (i+1) + ": " + touse + "\n";
                 usedpic = true;
                 b2.Dispose();
                 if (usedwidth == totalwidth)
