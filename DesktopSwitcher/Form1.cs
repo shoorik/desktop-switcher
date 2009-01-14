@@ -32,6 +32,7 @@ namespace DesktopSwitcher
         string pics = "";
         bool usedpic = true;
         int farthestleft = 0;
+        string lastpic = "";
 
         public Form1()
         {
@@ -66,6 +67,8 @@ namespace DesktopSwitcher
             getscreens();
             if (autostart.Checked)
                 start_timer();
+            Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
+
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -132,6 +135,25 @@ namespace DesktopSwitcher
             ourkey.Close();
         }
 
+        /// <summary>
+        /// gets information about the screens
+        /// </summary>
+        /// <param name="popup">whether or not to display screen information after diagnostic</param>
+        private void diagnostic(bool popup)
+        {
+            desktops = Screen.AllScreens;
+            getscreens();
+            regsave();
+            if (popup)
+            {
+                string done = " Screen(s)\n\nOrder:\n";
+                for (int i = 0; i < desktops.Length; i++)
+                    done += " | " + desktops[i].DeviceName.Substring(11, 1).ToString(); ;
+                done += " |";
+                MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
+            }
+        }
+
         #region ratiostuff
         /// <summary>
         /// gets ratio of picture
@@ -195,13 +217,14 @@ namespace DesktopSwitcher
         /// <param name="use">file name and path to use for wallpaper, for random image, use ""</param>
         private void changepaper(string use)
         {
-            File.Delete(dirtb.Text + "\\Background.bmp");
             string path = dirtb.Text + "\\Background.bmp";
+            File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
             string file = use;
             if (use == "")
                 file = getrandompic(0);
             pics = "Screen 1: " + file;
+            lastpic = file;
             Bitmap b = new Bitmap(file);
             makepicture(ref final,ref b, 0);
             for (int i = 1; i < desktops.Length; i++)
@@ -219,7 +242,8 @@ namespace DesktopSwitcher
                 usedpic = true;
                 b2.Dispose();
             }
-            usedwidth = 0;   
+            usedwidth = 0;
+
             Bitmap newfinal = new Bitmap(final.Width, final.Height);         
             if(farthestleft < 0)
             {
@@ -238,6 +262,8 @@ namespace DesktopSwitcher
             }
             else
                 final.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
+
+                
             setwallpaper(path, 1, 0);
             if (showtips.Checked)
             {
@@ -536,16 +562,15 @@ namespace DesktopSwitcher
 
         private void diagnosticToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string done = " Screens\n\nOrder:\n";
-            desktops = Screen.AllScreens;
-            getscreens();
-            regsave();
-            for (int i = 0; i < desktops.Length; i++)
-                done += " | " + desktops[i].DeviceName.Substring(11, 1).ToString(); ;
-            done += " |";
-            MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
+            diagnostic(true);
         }
         #endregion
+
+        private void displaySettingsChanged(object sender, EventArgs e)
+        {
+            diagnostic(false);
+            changepaper(lastpic);
+        }
 
         private void currentPicturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
