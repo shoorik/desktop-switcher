@@ -26,12 +26,8 @@ namespace DesktopSwitcher
         string[] denoms = new string[] { "Seconds", "Minutes", "Hours", "Days" };   //for interval settings
         int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //                                                        //
         Screen[] desktops = Screen.AllScreens; //array of all screens on system
-        Screen[] desktops2;
-        Screen[] ordered = Screen.AllScreens;
         int totalwidth; //total width of all screens
         int allheight = 0;
-        int highestscreen = 0;
-        int[] heightfromtop = new int[10];
         int usedwidth = 0;
         string pics = "";
         bool usedpic = true;
@@ -44,7 +40,6 @@ namespace DesktopSwitcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            desktops2 = desktops;
             dualmon.Checked = desktops.Length > 1;
             timer.Tick += new EventHandler(timer_Tick);
             trayicon.Icon = this.Icon;
@@ -62,12 +57,6 @@ namespace DesktopSwitcher
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
-                try
-                {
-                    for (int i = 0; i < heightfromtop.Length; i++)
-                        heightfromtop[i] = (int)ourkey.GetValue("heightfromtop" + i);
-                }
-                catch (Exception x) { x.ToString(); diagnostic(); }
                 ourkey.Close();
             }
             catch (Exception x) { x.ToString(); }
@@ -85,29 +74,22 @@ namespace DesktopSwitcher
         }
 
         /// <summary>
-        /// finds the height from the top of the highest screen, to the bottom of the lowest screen
-        /// </summary>
-        private void findallheight()
-        {
-            for (int i = 0; i < desktops.Length; i++)
-                if (desktops[i].Bounds.Height + heightfromtop[i] > allheight)
-                    allheight = desktops[i].Bounds.Height + heightfromtop[i];
-        }
-
-        /// <summary>
         /// counts number of screens and their sizes, displays them in menu bar, saves them in desktops array
+        /// puts screens in array in physical order
         /// </summary>
         private void getscreens()
         {
+            farthestleft = 0;
             totalwidth = 0;
-            int[] order = new int[10];
+            allheight = 0;
+            int wide = farthestleft;
+            Screen[] temp = Screen.AllScreens;
             ToolStripMenuItem[] t = new ToolStripMenuItem[desktops.Length];
             for (int i = 0; i < desktops.Length; i++)
             {
                 totalwidth += desktops[i].Bounds.Width;
-                findallheight();
-                if (desktops[i].Bounds.Height > highestscreen)
-                    highestscreen = desktops[i].Bounds.Height;
+                if (desktops[i].Bounds.Height + desktops[i].WorkingArea.Y > allheight)
+                    allheight = desktops[i].Bounds.Height + desktops[i].WorkingArea.Y;
                 if (desktops[i].WorkingArea.X < farthestleft)
                     farthestleft = desktops[i].WorkingArea.X;
                 t[i] = new ToolStripMenuItem();
@@ -121,14 +103,14 @@ namespace DesktopSwitcher
                 props[1].Text = "Height: " + desktops[i].Bounds.Height.ToString();
                 props[2].Text = "Ratio:  " + getratio(i).ToString();
                 t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
-
             }
-            int wide = farthestleft;
             for (int i = 0; i < desktops.Length; i++)
-            {
-                desktops[i] = Screen.FromPoint(new Point(wide, 0));
-                wide += desktops[i].Bounds.Width;
-            }
+                if (desktops[i].WorkingArea.X == wide)
+                {
+                    temp[i] = desktops[i];
+                    wide += temp[i].Bounds.Width;
+                }
+            desktops = temp;
             screenslist.DropDownItems.Clear();
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
         }
@@ -147,62 +129,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("autostart", autostart.Checked);
             ourkey.SetValue("subdirs", subdirs.Checked);
             ourkey.SetValue("balloon", showtips.Checked);
-            for (int i = 0; i < heightfromtop.Length; i++)
-                ourkey.SetValue("heightfromtop" + i, heightfromtop[i]);
             ourkey.Close();
-        }
-
-        /// <summary>
-        /// captures an image of the screen when background is all white to determine the different screen orientations
-        /// </summary>
-        private void diagnostic()
-        {
-            desktops = desktops2;
-            getscreens();
-            Bitmap b = new Bitmap(10, 10);
-            for (int i = 0; i < 10; i++)
-                for (int j = 0; j < 10; j++)
-                    b.SetPixel(i, j, Color.White);
-            b.Save("C:\\schraitletemp.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
-            RegistryKey ourkey = Registry.CurrentUser.OpenSubKey("Control Panel\\Desktop", true);
-            string path = (string)ourkey.GetValue("Wallpaper");
-            string tile = (string)ourkey.GetValue("TileWallpaper");
-            string style = (string)ourkey.GetValue("WallpaperStyle");
-            ourkey.SetValue("Wallpaper", "C:\\schraitletemp.bmp");
-            ourkey.SetValue("TileWallpaper", "1");
-            ourkey.SetValue("WallpaperStyle", "0");
-            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, "C:\\schraitletemp.bmp", SPIF_SENDWININICHANGE);
-            System.Threading.Thread.Sleep(500);
-            SendKeys.SendWait("^{prtsc}");
-            Bitmap test = new Bitmap(Clipboard.GetImage());
-            ourkey.SetValue("Wallpaper", path);
-            ourkey.SetValue("TileWallpaper", tile);
-            ourkey.SetValue("WallpaperStyle", style);
-            SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_SENDWININICHANGE);
-            File.Delete("c:\\schraitletemp.bmp");
-            heightfromtop = new int[10];
-            for (int i = 0; i < test.Height; i++)
-                if (test.GetPixel(50, i) == Color.FromArgb(0, 0, 0))
-                    heightfromtop[0] = i;
-                else
-                    i = test.Height;
-            for (int i = 1; i < desktops.Length; i++)
-                for (int j = 0; j < test.Height; j++)
-                    if (test.GetPixel(desktops[i - 1].Bounds.Width + 50, j) == Color.FromArgb(0,0,0))
-                        heightfromtop[i] = j;
-                    else
-                        j = test.Height;
-            ourkey.Close();
-            regsave();
-            findallheight();
-        }
-
-        private int findscreen(Screen test)
-        {
-            for (int i = 0; i < desktops.Length; i++)
-                if (test.Equals(desktops[i]))
-                    return i;
-            return -1;
         }
 
         #region ratiostuff
@@ -484,7 +411,8 @@ namespace DesktopSwitcher
 
             Graphics h;
             h = Graphics.FromImage(b);
-            h.DrawImage(temp, usedwidth, heightfromtop[screen], workingwidth, workingheight);
+            h.DrawImage(temp, usedwidth, desktops[screen].WorkingArea.Y, workingwidth, workingheight);
+            //h.DrawImage(temp, usedwidth, heightfromtop[screen], workingwidth, workingheight);
             h.Save();
             h.Dispose();
 
@@ -608,7 +536,14 @@ namespace DesktopSwitcher
 
         private void diagnosticToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            diagnostic();
+            string done = " Screens\n\nOrder:\n";
+            desktops = Screen.AllScreens;
+            getscreens();
+            regsave();
+            for (int i = 0; i < desktops.Length; i++)
+                done += " | " + desktops[i].DeviceName.Substring(11, 1).ToString(); ;
+            done += " |";
+            MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
         }
         #endregion
 
