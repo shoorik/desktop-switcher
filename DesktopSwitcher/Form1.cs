@@ -221,19 +221,20 @@ namespace DesktopSwitcher
             File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
             string file = use;
-            if (use == "")
-                file = getrandompic(0);
-            pics = "Screen 1: " + file;
-            lastpic = file;
-            Bitmap b = new Bitmap(file);
-            makepicture(ref final,ref b, 0);
-            for (int i = 1; i < desktops.Length; i++)
+            pics = "";
+            //if (use == "")
+            //    file = getrandompic(0);
+            //pics = "Screen 1: " + file;
+            //Bitmap b = new Bitmap(file);
+            //makepicture(ref final,ref b, 0);
+            for (int i = 0; i < desktops.Length; i++)
             {
                 string touse;
                 if(dualmon.Checked && use == "")
                     touse = getrandompic(totalwidth - usedwidth);
                 else
                     touse = file;
+                lastpic = touse;
                 
                 Bitmap b2 = new Bitmap(touse);
                 makepicture(ref final,ref b2, i);
@@ -241,6 +242,8 @@ namespace DesktopSwitcher
                     pics += "\nScreen " + (i+1) + ": " + touse;
                 usedpic = true;
                 b2.Dispose();
+                if (usedwidth == totalwidth)
+                    i = desktops.Length;
             }
             usedwidth = 0;
 
@@ -272,11 +275,11 @@ namespace DesktopSwitcher
             }
             final.Dispose();
             newfinal.Dispose();
-            b.Dispose();
+            //b.Dispose();
         }
 
         /// <summary>
-        /// scales down bitmap by specified scale
+        /// scales down bitmap to specified dimensions
         /// http://www.personalmicrocosms.com/Pages/dotnettips.aspx?c=24&t=50#tip
         /// </summary>
         /// <param name="Bitmap">bitmap to scale</param>
@@ -299,7 +302,7 @@ namespace DesktopSwitcher
         }
 
         /// <summary>
-        /// gets random picture from directory based on given max width, if picture is close enough to max width that the scaling will be correct, picture is returned
+        /// gets random picture from directory based on given max width, if picture is close enough to max width that the scaling will be correct, picture is returned, even if the width is greater than maxwidth
         /// </summary>
         /// <param name="maxwidth">maximum picture width that is returned; any size = 0</param>
         private string getrandompic(int maxwidth)
@@ -315,6 +318,7 @@ namespace DesktopSwitcher
                     pics.Add(f);
             FileInfo temp;
             Bitmap b;
+            int fail = 0;
             do
             {
                 int c = new Random().Next(pics.Count);
@@ -324,9 +328,10 @@ namespace DesktopSwitcher
                     ok = false;
                 else
                     ok = true;
-                if (maxwidth == 0)
+                if (maxwidth == 0 || fail == 100)
                     ok = true;
                 b.Dispose();
+                fail++;
             } while (!ok);
             return temp.FullName;
         }
@@ -350,6 +355,23 @@ namespace DesktopSwitcher
             for (int i = start; i <= end; i++)
                 temp += desktops[i].Bounds.Width;
             return temp;
+        }
+
+        private Bitmap rotateImage(Bitmap b, float angle)
+        {
+            //create a new empty bitmap to hold rotated image
+            Bitmap returnBitmap = new Bitmap(b.Height, b.Width);
+            //make a graphics object from the empty bitmap
+            Graphics g = Graphics.FromImage(returnBitmap);
+            //move rotation point to center of image
+            g.TranslateTransform((float)b.Width / 2, (float)b.Height / 2);
+            //rotate
+            g.RotateTransform(angle);
+            //move image back
+            g.TranslateTransform(-(float)b.Width / 2, -(float)b.Height / 2);
+            //draw passed in image onto graphics object
+            g.DrawImage(b, new Point(0, 0));
+            return returnBitmap;
         }
 
         /// <summary>

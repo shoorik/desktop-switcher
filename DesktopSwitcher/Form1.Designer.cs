@@ -122,13 +122,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -142,7 +142,7 @@
             this.diagnosticToolStripMenuItem,
             this.showtips});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // dualmon
@@ -193,13 +193,13 @@
             // screenslist
             // 
             this.screenslist.Name = "screenslist";
-            this.screenslist.Size = new System.Drawing.Size(59, 20);
+            this.screenslist.Size = new System.Drawing.Size(57, 20);
             this.screenslist.Text = "Screens";
             // 
             // currentPicturesToolStripMenuItem
             // 
             this.currentPicturesToolStripMenuItem.Name = "currentPicturesToolStripMenuItem";
-            this.currentPicturesToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
+            this.currentPicturesToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
             this.currentPicturesToolStripMenuItem.Text = "Current Pictures";
             this.currentPicturesToolStripMenuItem.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem_Click);
             // 
@@ -273,34 +273,34 @@
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 92);
             // 
             // traychange
             // 
             this.traychange.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.traychange.Name = "traychange";
-            this.traychange.Size = new System.Drawing.Size(186, 22);
+            this.traychange.Size = new System.Drawing.Size(197, 22);
             this.traychange.Text = "Change Background";
             this.traychange.Click += new System.EventHandler(this.traychange_Click);
             // 
             // currentPicturesToolStripMenuItem1
             // 
             this.currentPicturesToolStripMenuItem1.Name = "currentPicturesToolStripMenuItem1";
-            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(186, 22);
+            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
             this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
             this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // exit
             // 
             this.exit.Name = "exit";
-            this.exit.Size = new System.Drawing.Size(186, 22);
+            this.exit.Size = new System.Drawing.Size(197, 22);
             this.exit.Text = "Exit";
             this.exit.Click += new System.EventHandler(this.exit_Click);
             // 

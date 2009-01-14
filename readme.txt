@@ -28,6 +28,7 @@ won't work correctly if there are two rows of monitors
 changelog:
 01/14/09:	streamlined diagnostic
 			fixed bug that would mess up when one monitor was lower than others
+			added display change detection (only really useful for tablet pc's)
 01/12/09:	added drag and drop			
 01/11/09: 	added ability to detect physical monitor setup and have desktops being displayed across the monitors when primary monitor isn't the farthest left
 
