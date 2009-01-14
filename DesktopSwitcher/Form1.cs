@@ -569,7 +569,7 @@ namespace DesktopSwitcher
         {
             string[] dropped = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4)))
+            if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4).ToLower()))
                 changepaper(dropped[0]);
         }
     }
