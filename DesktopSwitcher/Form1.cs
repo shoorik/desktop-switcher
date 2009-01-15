@@ -69,7 +69,6 @@ namespace DesktopSwitcher
             if (autostart.Checked)
                 start_timer();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
-
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -86,8 +85,6 @@ namespace DesktopSwitcher
             farthestleft = 0;
             totalwidth = 0;
             allheight = 0;
-            int wide = farthestleft;
-            Screen[] temp = Screen.AllScreens;
             ToolStripMenuItem[] t = new ToolStripMenuItem[desktops.Length];
             for (int i = 0; i < desktops.Length; i++)
             {
@@ -108,13 +105,13 @@ namespace DesktopSwitcher
                 props[2].Text = "Ratio:  " + getratio(i).ToString();
                 t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
             }
+            int wide = farthestleft;
             for (int i = 0; i < desktops.Length; i++)
-                if (desktops[i].WorkingArea.X == wide)
-                {
-                    temp[i] = desktops[i];
-                    wide += temp[i].Bounds.Width;
-                }
-            desktops = temp;
+            {
+                desktops[i] = Screen.FromPoint(new Point(wide, 500));
+                wide += desktops[i].Bounds.Width;
+            }
+
             screenslist.DropDownItems.Clear();
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
         }
@@ -223,33 +220,36 @@ namespace DesktopSwitcher
             Bitmap final = new Bitmap(totalwidth, allheight);
             string file = use;
             if (use == "")
-                file = getrandompic(totalwidth - usedwidth);
+                file = getrandompic(0);
             pics = "Screen 1: " + file;
             Bitmap b = new Bitmap(file);
-            int i = 1 + makepicture(ref final, ref b, 0);
-            for (i = i; i < desktops.Length; i++)
+            int i = 0;
+            i += makepicture(ref final, ref b, i);
+            while (i < desktops.Length)
             {
                 string touse = "";
                 if (selecting)
-                {
-                    MessageBox.Show(pics + "\n\nChoose for screen " + (i+1).ToString());
-                    getpicdialog.InitialDirectory = dirtb.Text;
-                    if (getpicdialog.ShowDialog() == DialogResult.OK)
-                        touse = getpicdialog.FileName;
-                }
+                    if (MessageBox.Show(pics + "\n\nChoose for screen " + (i+1).ToString(), "Custom", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    {
+                        getpicdialog.InitialDirectory = dirtb.Text;
+                        if (getpicdialog.ShowDialog() == DialogResult.OK)
+                            touse = getpicdialog.FileName;
+                        else
+                            touse = use;
+                    }
+                    else
+                        touse = use;
                 else
-                {
                     if (dualmon.Checked && use == "")
                         touse = getrandompic(totalwidth - usedwidth);
                     else
-                        touse = use;
-                }
+                        touse = file;
                 lastpic = touse;
-                
+
                 Bitmap b2 = new Bitmap(touse);
-                i = 1 + makepicture(ref final,ref b2, i);
+                i += makepicture(ref final, ref b2, i);
                 if (usedpic)
-                    pics += "\nScreen " + (i+1) + ": " + touse;
+                    pics += "\nScreen " + (i) + ": " + touse;
                 usedpic = true;
                 b2.Dispose();
                 if (usedwidth == totalwidth)
@@ -285,7 +285,7 @@ namespace DesktopSwitcher
             }
             final.Dispose();
             newfinal.Dispose();
-            //b.Dispose();
+            b.Dispose();
         }
 
         /// <summary>
@@ -394,31 +394,39 @@ namespace DesktopSwitcher
         private int makepicture(ref Bitmap b, ref Bitmap picin, int screen)
         {
             int action = 0;
-            int i = screen;
+            int j = screen;
             int workingwidth = desktops[screen].Bounds.Width;
             int workingheight = desktops[screen].Bounds.Height;
 
             if (usedwidth >= widthofscreens(0, screen))  //if the screen has already been filled over, return the bitmap back unchanged
             {
                 usedpic = false;
-                return screen;
+                return 1;
             }
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
-            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen) && desktops.Length > 1)   
+            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen) && desktops.Length > 1)
             {
+            int i = screen;
                 while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight))
                 {
                     i++;
+                    j++;
                     workingwidth = widthofscreens(screen, i);
                 }
                 if (!sameratio(ref picin, workingwidth, workingheight))
-                    if(picin.Width >= workingwidth)
+                    if (picin.Width >= workingwidth)
                         action = 0;
                     else
+                    {
                         workingwidth -= desktops[i].Bounds.Width;
+                        j--;
+                    }
                 else
                     action = 1;
+                j = j - screen +1;
             }
+            else
+                j = 1;
 
             if(sameratio(ref picin, workingwidth, workingheight))
                 action = 1;
@@ -475,7 +483,7 @@ namespace DesktopSwitcher
 
             temp.Dispose();
             usedwidth += workingwidth;
-            return i;
+            return j;
         }
 
         /// <summary>
@@ -601,7 +609,7 @@ namespace DesktopSwitcher
         private void displaySettingsChanged(object sender, EventArgs e)
         {
             diagnostic(false);
-            changepaper(lastpic);
+            changepaper("");
         }
 
         private void currentPicturesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -637,7 +645,6 @@ namespace DesktopSwitcher
             if (getpicdialog.ShowDialog() == DialogResult.OK)
                 changepaper(getpicdialog.FileName);
             selecting = false;
-
         }
     }
 }

@@ -45,6 +45,7 @@
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showtips = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
+            this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changebutton = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
@@ -62,7 +63,6 @@
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.denombox = new System.Windows.Forms.ComboBox();
-            this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -197,6 +197,13 @@
             this.screenslist.Name = "screenslist";
             this.screenslist.Size = new System.Drawing.Size(57, 20);
             this.screenslist.Text = "Screens";
+            // 
+            // customizeToolStripMenuItem
+            // 
+            this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
+            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.customizeToolStripMenuItem.Text = "Customize";
+            this.customizeToolStripMenuItem.Click += new System.EventHandler(this.customizeToolStripMenuItem_Click);
             // 
             // currentPicturesToolStripMenuItem
             // 
@@ -346,13 +353,6 @@
             this.denombox.Name = "denombox";
             this.denombox.Size = new System.Drawing.Size(80, 21);
             this.denombox.TabIndex = 15;
-            // 
-            // customizeToolStripMenuItem
-            // 
-            this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
-            this.customizeToolStripMenuItem.Text = "Customize";
-            this.customizeToolStripMenuItem.Click += new System.EventHandler(this.customizeToolStripMenuItem_Click);
             // 
             // Form1
             // 
