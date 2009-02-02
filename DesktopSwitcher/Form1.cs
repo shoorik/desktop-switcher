@@ -22,7 +22,7 @@ namespace DesktopSwitcher
         const int SPIF_UPDATEINIFILE = 0x01;
         const int SPIF_SENDWININICHANGE = 0x02;
 
-        string exts = ".jpg.jpeg.bmp.png";
+        public const string exts = ".jpg.jpeg.bmp.png";
         string[] denoms = new string[] { "Seconds", "Minutes", "Hours", "Days" };   //for interval settings
         int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //                                                        //
         Screen[] desktops = Screen.AllScreens; //array of all screens on system
@@ -32,8 +32,14 @@ namespace DesktopSwitcher
         string pics = "";
         bool usedpic = true;
         int farthestleft = 0;
-        string lastpic = "";
         bool selecting = false;
+        stats stat;
+        bool randompicking = false;
+        List<string> pictures = new List<string>();
+        colormatcher colors;
+        ArrayList dirpics;
+        directory dir;
+        picture lastpic;
 
         public Form1()
         {
@@ -56,9 +62,11 @@ namespace DesktopSwitcher
                 denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
                 dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
                 ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
+                colorratio.Value = decimal.Parse((string)ourkey.GetValue("color"));
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
+                colormatching.Checked = bool.Parse((string)ourkey.GetValue("colormatch"));
                 ourkey.Close();
             }
             catch (Exception x) { x.ToString(); }
@@ -69,11 +77,19 @@ namespace DesktopSwitcher
             if (autostart.Checked)
                 start_timer();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
+            stat = new stats(dirtb.Text);
+            colors = new colormatcher(dirtb.Text);
+            dirpics = getdirpics();
+            label5.Text = "Parsing Directory";
+            dir = new directory(dirtb.Text);
+            label5.Text = "Messages";
+            lastpic = dir.getpic(0);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             regsave();
+            dir.savefile();
         }
 
         /// <summary>
@@ -127,9 +143,11 @@ namespace DesktopSwitcher
             ourkey.SetValue("denomindex", denombox.SelectedIndex);
             ourkey.SetValue("dualmon", dualmon.Checked);
             ourkey.SetValue("ratio", ratiobox.Value);
+            ourkey.SetValue("color", colorratio.Value);
             ourkey.SetValue("autostart", autostart.Checked);
             ourkey.SetValue("subdirs", subdirs.Checked);
             ourkey.SetValue("balloon", showtips.Checked);
+            ourkey.SetValue("colormatch", colormatching.Checked);
             ourkey.Close();
         }
 
@@ -195,6 +213,20 @@ namespace DesktopSwitcher
         {
             return (getratio(ref b) >= x/y - ((double)ratiobox.Value / 100 * x/y) && getratio(ref b) <= x/y + ((double)ratiobox.Value / 100 * x/y));
         }
+
+        /// <summary>
+        /// determines if ratio of dimensions is close enough to dimensions given
+        /// </summary>
+        /// <param name="b">bitmap to test</param>
+        /// <param name="x">width dimension</param>
+        /// <param name="y">height dimension</param>
+        /// <returns></returns>
+        private bool sameratio(int xtemp, int ytemp, double x, double y)
+        {
+            double x1 = (double)xtemp;
+            double y1 = (double)ytemp;
+            return ((x1/y1) >= x / y - ((double)ratiobox.Value / 100 * x / y) && (x1/y1) <= x / y + ((double)ratiobox.Value / 100 * x / y));
+        }
         #endregion
 
         /// <summary>
@@ -218,10 +250,18 @@ namespace DesktopSwitcher
             string path = dirtb.Text + "\\Background.bmp";
             File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
+            label5.Text = "Changing Picture";
             string file = use;
+            pictures.Clear();
             if (use == "")
+            {
                 file = getrandompic(0);
+                randompicking = true;
+            }
+            pictures.Add("1"+file);
             pics = "Screen 1: " + file;
+            if (randompicking && statenable.Checked)
+                stat.addpicture(file);
             Bitmap b = new Bitmap(file);
             int i = 0;
             i += makepicture(ref final, ref b, i);
@@ -244,12 +284,16 @@ namespace DesktopSwitcher
                         touse = getrandompic(totalwidth - usedwidth);
                     else
                         touse = file;
-                lastpic = touse;
 
                 Bitmap b2 = new Bitmap(touse);
                 i += makepicture(ref final, ref b2, i);
                 if (usedpic)
+                {
                     pics += "\nScreen " + (i) + ": " + touse;
+                    pictures.Add((i) + touse);
+                    if(randompicking && statenable.Checked)
+                        stat.addpicture(touse);
+                }
                 usedpic = true;
                 b2.Dispose();
                 if (usedwidth == totalwidth)
@@ -286,6 +330,10 @@ namespace DesktopSwitcher
             final.Dispose();
             newfinal.Dispose();
             b.Dispose();
+            if(randompicking && statenable.Checked)
+                stat.savestats();
+            randompicking = false;
+            label5.Text = "Messages";
         }
 
         /// <summary>
@@ -312,38 +360,69 @@ namespace DesktopSwitcher
         }
 
         /// <summary>
+        /// puts pictures from current directory into an arraylist
+        /// </summary>
+        /// <returns>ArrayList containing all pictures from directory</returns>
+        private ArrayList getdirpics()
+        {
+            ArrayList pics = new ArrayList();
+            DirectoryInfo di = new DirectoryInfo(dirtb.Text);
+            FileInfo[] all = di.GetFiles();
+            if (subdirs.Checked)
+                all = di.GetFiles("*.*", SearchOption.AllDirectories);
+            foreach (FileInfo f in all)
+                if (exts.Contains(f.Extension.ToLower()) && f.Extension != "" && f.FullName != (dirtb.Text + "\\Background.bmp"))
+                    pics.Add(f);
+            return pics;
+        }
+
+        /// <summary>
         /// gets random picture from directory based on given max width, if picture is close enough to max width that the scaling will be correct, picture is returned, even if the width is greater than maxwidth
         /// </summary>
         /// <param name="maxwidth">maximum picture width that is returned; any size = 0</param>
         private string getrandompic(int maxwidth)
         {
             bool ok = true;
-            ArrayList pics = new ArrayList();
-            DirectoryInfo di = new DirectoryInfo(dirtb.Text);
-            FileInfo[] all = di.GetFiles();
-            if(subdirs.Checked)
-                all = di.GetFiles("*.*", SearchOption.AllDirectories);
-            foreach (FileInfo f in all)
-                if (exts.Contains(f.Extension.ToLower()) && f.Extension != "")
-                    pics.Add(f);
-            FileInfo temp;
-            Bitmap b;
+            ArrayList pics = dir.getlist();
+            //FileInfo temp;
+            picture temp;
             int fail = 0;
+            int failpoint = pics.Count-1;
+            //DateTime start = DateTime.Now;
+            int c = 0;
             do
             {
-                int c = new Random().Next(pics.Count);
-                temp = (FileInfo)pics[c];
-                b = new Bitmap(temp.FullName);
-                if (b.Width > maxwidth && !sameratio(ref b,maxwidth,allheight))
+                //while(rands.Contains(c = new Random().Next(pics.Count)))
+                //{}
+                c = new Random().Next(pics.Count);
+                //temp = (FileInfo)pics[c];
+                temp = (picture)pics[c];
+                pics.RemoveAt(c);
+               // MessageBox.Show(temp.FullName);
+                label5.Text = pics.Count.ToString() + "  " + temp.getfilename();
+                if (colormatching.Checked && temp.getcolorindex() == "0|0|0")
+                    if (directory.getcolorindex(temp.getfilename()) != "0|0|0")
+                    {
+                        dir.removepic(temp);
+                        dir.update(new picture(temp.getfilename()));
+                    }
+                Application.DoEvents();
+                if (temp.getwidth() > maxwidth && !sameratio(temp.getwidth(), temp.getheight(), maxwidth, allheight))
+                    ok = false;
+                else if (lastpic.getfilename() == temp.getfilename())
+                        ok = false;
+                else if(colormatching.Checked && !directory.colorsmatch(lastpic.getcolorindex(), temp.getcolorindex(), (int)colorratio.Value))
                     ok = false;
                 else
                     ok = true;
-                if (maxwidth == 0 || fail == 100)
+                //TimeSpan duration = start - DateTime.Now;
+                if (maxwidth == 0 || fail == failpoint)// || duration.Seconds > 5)
                     ok = true;
-                b.Dispose();
                 fail++;
             } while (!ok);
-            return temp.FullName;
+
+            lastpic = temp;
+            return temp.getfilename();
         }
 
         private void choose_Click(object sender, EventArgs e)
@@ -503,6 +582,7 @@ namespace DesktopSwitcher
 
         }
 
+
         #region events
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
@@ -523,6 +603,7 @@ namespace DesktopSwitcher
         {
             if (browsedialog.ShowDialog() == DialogResult.OK)
             {
+                
                 DirectoryInfo di = new DirectoryInfo(browsedialog.SelectedPath);
                 if (checkforpics(di.GetFiles()))
                 {
@@ -532,6 +613,11 @@ namespace DesktopSwitcher
                     if (File.Exists(dirtb.Text + "\\Background.bmp"))
                         if (MessageBox.Show("Warning: There is a picture in this directory named \"Background.bmp\", this picture will be erased if no action is taken\nWould you like to rename it to \"Background2.bmp?\"","Warning",MessageBoxButtons.YesNo) == DialogResult.Yes)
                             File.Move(dirtb.Text + "\\Background.bmp", dirtb.Text + "\\Background2.bmp");
+                    stat = new stats(dirtb.Text);
+                    label5.Text = "Parsing Directory (This could take a while)";
+                    dir.savefile();
+                    dir = new directory(dirtb.Text);
+                    label5.Text = "Messages";
                 }
                 else
                     MessageBox.Show("There are no pictures in the specified directory");
@@ -634,8 +720,11 @@ namespace DesktopSwitcher
         {
             string[] dropped = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+            //if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4).ToLower()))
+            //    changepaper(dropped[0]);
+
             if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4).ToLower()))
-                changepaper(dropped[0]);
+                MessageBox.Show(colors.getcolorindex(dropped[0]).ToString());
         }
 
         private void customizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -645,6 +734,13 @@ namespace DesktopSwitcher
             if (getpicdialog.ShowDialog() == DialogResult.OK)
                 changepaper(getpicdialog.FileName);
             selecting = false;
+        }
+
+        private void rescanDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            label5.Text = "Parsing Directory (This could take a while)";
+            dir.parsedirectory(dirtb.Text);
+            label5.Text = "Messages";
         }
     }
 }

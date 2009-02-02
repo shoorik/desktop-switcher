@@ -42,8 +42,12 @@
             this.autostart = new System.Windows.Forms.ToolStripMenuItem();
             this.startmintool = new System.Windows.Forms.ToolStripMenuItem();
             this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statenable = new System.Windows.Forms.ToolStripMenuItem();
+            this.colormatching = new System.Windows.Forms.ToolStripMenuItem();
             this.showtips = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rescanDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,10 +67,14 @@
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.denombox = new System.Windows.Forms.ComboBox();
+            this.colorratio = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ratiobox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.colorratio)).BeginInit();
             this.SuspendLayout();
             // 
             // dirtb
@@ -141,8 +149,12 @@
             this.autostart,
             this.startmintool,
             this.subdirs,
+            this.statenable,
+            this.colormatching,
+            this.showtips,
+            this.toolStripSeparator1,
             this.diagnosticToolStripMenuItem,
-            this.showtips});
+            this.rescanDirectoryToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -178,12 +190,19 @@
             this.subdirs.Size = new System.Drawing.Size(191, 22);
             this.subdirs.Text = "Include Subdirectories";
             // 
-            // diagnosticToolStripMenuItem
+            // statenable
             // 
-            this.diagnosticToolStripMenuItem.Name = "diagnosticToolStripMenuItem";
-            this.diagnosticToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.diagnosticToolStripMenuItem.Text = "Diagnostic";
-            this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
+            this.statenable.CheckOnClick = true;
+            this.statenable.Name = "statenable";
+            this.statenable.Size = new System.Drawing.Size(191, 22);
+            this.statenable.Text = "Enable Stats";
+            // 
+            // colormatching
+            // 
+            this.colormatching.CheckOnClick = true;
+            this.colormatching.Name = "colormatching";
+            this.colormatching.Size = new System.Drawing.Size(191, 22);
+            this.colormatching.Text = "Enable Color Matching";
             // 
             // showtips
             // 
@@ -191,6 +210,25 @@
             this.showtips.Name = "showtips";
             this.showtips.Size = new System.Drawing.Size(191, 22);
             this.showtips.Text = "Show Balloon Tips";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
+            // 
+            // diagnosticToolStripMenuItem
+            // 
+            this.diagnosticToolStripMenuItem.Name = "diagnosticToolStripMenuItem";
+            this.diagnosticToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.diagnosticToolStripMenuItem.Text = "Screen Diagnostic";
+            this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
+            // 
+            // rescanDirectoryToolStripMenuItem
+            // 
+            this.rescanDirectoryToolStripMenuItem.Name = "rescanDirectoryToolStripMenuItem";
+            this.rescanDirectoryToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.rescanDirectoryToolStripMenuItem.Text = "Rescan Directory";
+            this.rescanDirectoryToolStripMenuItem.Click += new System.EventHandler(this.rescanDirectoryToolStripMenuItem_Click);
             // 
             // screenslist
             // 
@@ -214,7 +252,7 @@
             // 
             // changebutton
             // 
-            this.changebutton.Location = new System.Drawing.Point(332, 64);
+            this.changebutton.Location = new System.Drawing.Point(346, 83);
             this.changebutton.Name = "changebutton";
             this.changebutton.Size = new System.Drawing.Size(75, 41);
             this.changebutton.TabIndex = 9;
@@ -224,7 +262,7 @@
             // 
             // gobutton
             // 
-            this.gobutton.Location = new System.Drawing.Point(10, 83);
+            this.gobutton.Location = new System.Drawing.Point(10, 101);
             this.gobutton.Name = "gobutton";
             this.gobutton.Size = new System.Drawing.Size(75, 23);
             this.gobutton.TabIndex = 0;
@@ -256,7 +294,7 @@
             // 
             // choose
             // 
-            this.choose.Location = new System.Drawing.Point(251, 64);
+            this.choose.Location = new System.Drawing.Point(265, 83);
             this.choose.Name = "choose";
             this.choose.Size = new System.Drawing.Size(75, 41);
             this.choose.TabIndex = 12;
@@ -354,14 +392,52 @@
             this.denombox.Size = new System.Drawing.Size(80, 21);
             this.denombox.TabIndex = 15;
             // 
+            // colorratio
+            // 
+            this.colorratio.Location = new System.Drawing.Point(193, 104);
+            this.colorratio.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.colorratio.Name = "colorratio";
+            this.colorratio.Size = new System.Drawing.Size(33, 20);
+            this.colorratio.TabIndex = 16;
+            this.colorratio.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(101, 106);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(85, 13);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "Color Tolerance:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(40, 136);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Messages";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(433, 115);
+            this.ClientSize = new System.Drawing.Size(433, 158);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.denombox);
+            this.Controls.Add(this.colorratio);
             this.Controls.Add(this.ratiobox);
             this.Controls.Add(this.timernum);
             this.Controls.Add(this.dirbutton);
@@ -386,6 +462,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ratiobox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.colorratio)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -426,6 +503,13 @@
         private System.Windows.Forms.ToolStripMenuItem currentPicturesToolStripMenuItem1;
         private System.Windows.Forms.ComboBox denombox;
         private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
+        private System.Windows.Forms.NumericUpDown colorratio;
+        private System.Windows.Forms.ToolStripMenuItem colormatching;
+        private System.Windows.Forms.ToolStripMenuItem statenable;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem rescanDirectoryToolStripMenuItem;
+        private System.Windows.Forms.Label label5;
     }
 }
 
