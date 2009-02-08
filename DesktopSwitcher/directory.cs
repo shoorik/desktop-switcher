@@ -62,10 +62,10 @@ namespace DesktopSwitcher
             }
             string[] picarr = pictures.Split('\n');
             foreach (string s in picarr)
-            {                
+            {
                 string[] temp = s.Split(',');
                 if (temp.Length > 3)
-                    pics.Add(new picture(temp[0], int.Parse(temp[1]), int.Parse(temp[2]), temp[3]));
+                    pics.Add(new picture(temp[0], int.Parse(temp[1]), int.Parse(temp[2]), temp[3].Trim()));
             }
         }
 
@@ -214,7 +214,7 @@ namespace DesktopSwitcher
         {
             TextWriter w = new StreamWriter(file);
             foreach (picture pic in pics)
-                w.WriteLine(pic.getfilename() + "," + pic.getheight().ToString() + "," + pic.getwidth().ToString() + "," + pic.getcolorindex().ToString());
+                w.WriteLine(pic.getfilename() + "," + pic.getheight().ToString() + "," + pic.getwidth().ToString() + "," + pic.getcolorindex());
             w.Close();
         }
 

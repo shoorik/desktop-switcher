@@ -36,7 +36,6 @@ namespace DesktopSwitcher
         stats stat;
         bool randompicking = false;
         List<string> pictures = new List<string>();
-        colormatcher colors;
         ArrayList dirpics;
         directory dir;
         picture lastpic;
@@ -78,7 +77,6 @@ namespace DesktopSwitcher
                 start_timer();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
             stat = new stats(dirtb.Text);
-            colors = new colormatcher(dirtb.Text);
             dirpics = getdirpics();
             label5.Text = "Parsing Directory";
             dir = new directory(dirtb.Text);
@@ -258,7 +256,7 @@ namespace DesktopSwitcher
                 file = getrandompic(0);
                 randompicking = true;
             }
-            pictures.Add("1"+file);
+            pictures.Add(file);
             pics = "Screen 1: " + file;
             if (randompicking && statenable.Checked)
                 stat.addpicture(file);
@@ -290,7 +288,7 @@ namespace DesktopSwitcher
                 if (usedpic)
                 {
                     pics += "\nScreen " + (i) + ": " + touse;
-                    pictures.Add((i) + touse);
+                    pictures.Add(touse);
                     if(randompicking && statenable.Checked)
                         stat.addpicture(touse);
                 }
@@ -409,7 +407,7 @@ namespace DesktopSwitcher
                 Application.DoEvents();
                 if (temp.getwidth() > maxwidth && !sameratio(temp.getwidth(), temp.getheight(), maxwidth, allheight))
                     ok = false;
-                else if (lastpic.getfilename() == temp.getfilename())
+                else if (pictures.Contains(temp.getfilename()))
                         ok = false;
                 else if(colormatching.Checked && !directory.colorsmatch(lastpic.getcolorindex(), temp.getcolorindex(), (int)colorratio.Value))
                     ok = false;
@@ -720,11 +718,8 @@ namespace DesktopSwitcher
         {
             string[] dropped = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            //if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4).ToLower()))
-            //    changepaper(dropped[0]);
-
             if (exts.Contains(dropped[0].Substring(dropped[0].Length - 4, 4).ToLower()))
-                MessageBox.Show(colors.getcolorindex(dropped[0]).ToString());
+                changepaper(dropped[0]);
         }
 
         private void customizeToolStripMenuItem_Click(object sender, EventArgs e)
