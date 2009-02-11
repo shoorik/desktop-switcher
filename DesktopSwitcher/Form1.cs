@@ -37,8 +37,8 @@ namespace DesktopSwitcher
         bool randompicking = false;
         List<string> pictures = new List<string>();
         ArrayList dirpics;
-        directory dir;
-        picture lastpic;
+        //directory dir;
+        //picture lastpic;
 
         public Form1()
         {
@@ -79,15 +79,15 @@ namespace DesktopSwitcher
             stat = new stats(dirtb.Text);
             dirpics = getdirpics();
             label5.Text = "Parsing Directory";
-            dir = new directory(dirtb.Text);
+            //dir = new directory(dirtb.Text);
             label5.Text = "Messages";
-            lastpic = dir.getpic(0);
+            //lastpic = dir.getpic(0);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             regsave();
-            dir.savefile();
+            //dir.savefile();
         }
 
         /// <summary>
@@ -381,17 +381,25 @@ namespace DesktopSwitcher
         private string getrandompic(int maxwidth)
         {
             bool ok = true;
-            ArrayList pics = dir.getlist();
-            //FileInfo temp;
-            picture temp;
+            //ArrayList pics = dir.getlist();
+            //picture temp;
+            ArrayList pics = new ArrayList();
+            DirectoryInfo di = new DirectoryInfo(dirtb.Text);
+            FileInfo[] all = di.GetFiles();
+            if (subdirs.Checked)
+                all = di.GetFiles("*.*", SearchOption.AllDirectories);
+            foreach (FileInfo f in all)
+                if (exts.Contains(f.Extension.ToLower()) && f.Extension != "")
+                    pics.Add(f);
+            FileInfo temp;
+            Bitmap b;
             int fail = 0;
             int failpoint = pics.Count-1;
             //DateTime start = DateTime.Now;
             int c = 0;
             do
             {
-                //while(rands.Contains(c = new Random().Next(pics.Count)))
-                //{}
+                /* all of this is for color matching, to implement it, just uncomment and comment out the code below it
                 c = new Random().Next(pics.Count);
                 //temp = (FileInfo)pics[c];
                 temp = (picture)pics[c];
@@ -416,11 +424,24 @@ namespace DesktopSwitcher
                 //TimeSpan duration = start - DateTime.Now;
                 if (maxwidth == 0 || fail == failpoint)// || duration.Seconds > 5)
                     ok = true;
+                fail++;*/
+
+                c = new Random().Next(pics.Count);
+                temp = (FileInfo)pics[c];
+                b = new Bitmap(temp.FullName);
+                if (b.Width > maxwidth && !sameratio(ref b, maxwidth, allheight))
+                    ok = false;
+                else
+                    ok = true;
+                if (maxwidth == 0 || fail == 100)
+                    ok = true;
+                b.Dispose();
                 fail++;
             } while (!ok);
 
-            lastpic = temp;
-            return temp.getfilename();
+            //lastpic = temp;
+            //return temp.getfilename();
+            return temp.FullName;
         }
 
         private void choose_Click(object sender, EventArgs e)
@@ -611,11 +632,11 @@ namespace DesktopSwitcher
                     if (File.Exists(dirtb.Text + "\\Background.bmp"))
                         if (MessageBox.Show("Warning: There is a picture in this directory named \"Background.bmp\", this picture will be erased if no action is taken\nWould you like to rename it to \"Background2.bmp?\"","Warning",MessageBoxButtons.YesNo) == DialogResult.Yes)
                             File.Move(dirtb.Text + "\\Background.bmp", dirtb.Text + "\\Background2.bmp");
-                    stat = new stats(dirtb.Text);
-                    label5.Text = "Parsing Directory (This could take a while)";
-                    dir.savefile();
-                    dir = new directory(dirtb.Text);
-                    label5.Text = "Messages";
+                    //stat = new stats(dirtb.Text);
+                    //label5.Text = "Parsing Directory (This could take a while)";
+                    //dir.savefile();
+                    //dir = new directory(dirtb.Text);
+                    //label5.Text = "Messages";
                 }
                 else
                     MessageBox.Show("There are no pictures in the specified directory");
@@ -734,7 +755,7 @@ namespace DesktopSwitcher
         private void rescanDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             label5.Text = "Parsing Directory (This could take a while)";
-            dir.parsedirectory(dirtb.Text);
+            //dir.parsedirectory(dirtb.Text);
             label5.Text = "Messages";
         }
     }
