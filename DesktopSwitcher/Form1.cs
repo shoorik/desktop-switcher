@@ -61,11 +61,9 @@ namespace DesktopSwitcher
                 denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
                 dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
                 ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
-                colorratio.Value = decimal.Parse((string)ourkey.GetValue("color"));
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
-                colormatching.Checked = bool.Parse((string)ourkey.GetValue("colormatch"));
                 ourkey.Close();
             }
             catch (Exception x) { x.ToString(); }
@@ -78,9 +76,7 @@ namespace DesktopSwitcher
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
             stat = new stats(dirtb.Text);
             dirpics = getdirpics();
-            label5.Text = "Parsing Directory";
             //dir = new directory(dirtb.Text);
-            label5.Text = "Messages";
             //lastpic = dir.getpic(0);
         }
 
@@ -141,11 +137,9 @@ namespace DesktopSwitcher
             ourkey.SetValue("denomindex", denombox.SelectedIndex);
             ourkey.SetValue("dualmon", dualmon.Checked);
             ourkey.SetValue("ratio", ratiobox.Value);
-            ourkey.SetValue("color", colorratio.Value);
             ourkey.SetValue("autostart", autostart.Checked);
             ourkey.SetValue("subdirs", subdirs.Checked);
             ourkey.SetValue("balloon", showtips.Checked);
-            ourkey.SetValue("colormatch", colormatching.Checked);
             ourkey.Close();
         }
 
@@ -248,7 +242,6 @@ namespace DesktopSwitcher
             string path = dirtb.Text + "\\Background.bmp";
             File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
-            label5.Text = "Changing Picture";
             string file = use;
             pictures.Clear();
             if (use == "")
@@ -331,7 +324,6 @@ namespace DesktopSwitcher
             if(randompicking && statenable.Checked)
                 stat.savestats();
             randompicking = false;
-            label5.Text = "Messages";
         }
 
         /// <summary>
@@ -750,13 +742,6 @@ namespace DesktopSwitcher
             if (getpicdialog.ShowDialog() == DialogResult.OK)
                 changepaper(getpicdialog.FileName);
             selecting = false;
-        }
-
-        private void rescanDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            label5.Text = "Parsing Directory (This could take a while)";
-            //dir.parsedirectory(dirtb.Text);
-            label5.Text = "Messages";
         }
     }
 }
