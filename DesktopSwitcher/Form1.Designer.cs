@@ -65,10 +65,13 @@
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.denombox = new System.Windows.Forms.ComboBox();
+            this.usebox = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ratiobox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.usebox)).BeginInit();
             this.SuspendLayout();
             // 
             // dirtb
@@ -351,9 +354,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(101, 85);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(86, 13);
+            this.label1.Size = new System.Drawing.Size(88, 13);
             this.label1.TabIndex = 14;
-            this.label1.Text = "Ratio Tolerance:";
+            this.label1.Text = "Scale Tolerance:";
             // 
             // denombox
             // 
@@ -370,15 +373,43 @@
             this.denombox.Size = new System.Drawing.Size(80, 21);
             this.denombox.TabIndex = 15;
             // 
+            // usebox
+            // 
+            this.usebox.Location = new System.Drawing.Point(193, 109);
+            this.usebox.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.usebox.Name = "usebox";
+            this.usebox.Size = new System.Drawing.Size(33, 20);
+            this.usebox.TabIndex = 13;
+            this.usebox.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(101, 111);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(80, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Use Tolerance:";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(409, 110);
+            this.ClientSize = new System.Drawing.Size(409, 135);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.denombox);
             this.Controls.Add(this.ratiobox);
+            this.Controls.Add(this.usebox);
             this.Controls.Add(this.timernum);
             this.Controls.Add(this.gobutton);
             this.Controls.Add(this.dirbutton);
@@ -402,6 +433,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ratiobox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.usebox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -444,6 +476,8 @@
         private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem statenable;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.NumericUpDown usebox;
+        private System.Windows.Forms.Label label4;
     }
 }
 

@@ -61,6 +61,7 @@ namespace DesktopSwitcher
                 denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
                 dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
                 ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
+                usebox.Value = decimal.Parse((string)ourkey.GetValue("use"));
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
@@ -137,6 +138,7 @@ namespace DesktopSwitcher
             ourkey.SetValue("denomindex", denombox.SelectedIndex);
             ourkey.SetValue("dualmon", dualmon.Checked);
             ourkey.SetValue("ratio", ratiobox.Value);
+            ourkey.SetValue("use", usebox.Value);
             ourkey.SetValue("autostart", autostart.Checked);
             ourkey.SetValue("subdirs", subdirs.Checked);
             ourkey.SetValue("balloon", showtips.Checked);
@@ -189,9 +191,9 @@ namespace DesktopSwitcher
         /// <param name="b">bitmap to test</param>
         /// <param name="screen">index of the screen in the desktop array</param>
         /// <returns></returns>
-        private bool sameratio(ref Bitmap b, int screen)
+        private bool sameratio(ref Bitmap b, int screen, double value)
         {
-            return (getratio(ref b) >= getratio(screen) - ((double)ratiobox.Value / 100 * getratio(screen)) && getratio(ref b) <= getratio(screen) + ((double)ratiobox.Value / 100 * getratio(screen)));
+            return (getratio(ref b) >= getratio(screen) - (value / 100 * getratio(screen)) && getratio(ref b) <= getratio(screen) + (value / 100 * getratio(screen)));
         }
 
         /// <summary>
@@ -201,9 +203,9 @@ namespace DesktopSwitcher
         /// <param name="x">width dimension</param>
         /// <param name="y">height dimension</param>
         /// <returns></returns>
-        private bool sameratio(ref Bitmap b, double x, double y)
+        private bool sameratio(ref Bitmap b, double x, double y, double value)
         {
-            return (getratio(ref b) >= x/y - ((double)ratiobox.Value / 100 * x/y) && getratio(ref b) <= x/y + ((double)ratiobox.Value / 100 * x/y));
+            return (getratio(ref b) >= x/y - (value / 100 * x/y) && getratio(ref b) <= x/y + (value / 100 * x/y));
         }
 
         /// <summary>
@@ -213,7 +215,7 @@ namespace DesktopSwitcher
         /// <param name="x">width dimension</param>
         /// <param name="y">height dimension</param>
         /// <returns></returns>
-        private bool sameratio(int xtemp, int ytemp, double x, double y)
+        private bool sameratio(int xtemp, int ytemp, double x, double y, double value)
         {
             double x1 = (double)xtemp;
             double y1 = (double)ytemp;
@@ -233,6 +235,31 @@ namespace DesktopSwitcher
             return false;
         }
 
+        private int getwidth(int given)
+        {
+            int screen = 0;
+            int width = 0;
+
+            if(given != 0)
+                while (width < totalwidth - given)
+                {
+                    width += desktops[screen].Bounds.Width;
+                    screen++;
+                }
+            width = desktops[screen].Bounds.Width;
+            int height = desktops[screen].Bounds.Height;
+            screen++;
+            while (screen < desktops.Length)
+            {
+                if (desktops[screen].Bounds.Height == height)
+                    width += desktops[screen].Bounds.Width;
+                else
+                    screen = desktops.Length;
+                screen++;
+            }
+            return width;
+        }
+
         /// <summary>
         /// changes wallpaper to random image
         /// </summary>
@@ -246,7 +273,7 @@ namespace DesktopSwitcher
             pictures.Clear();
             if (use == "")
             {
-                file = getrandompic(0);
+                file = getrandompic(getwidth(0), 0);
                 randompicking = true;
             }
             pictures.Add(file);
@@ -272,7 +299,7 @@ namespace DesktopSwitcher
                         touse = use;
                 else
                     if (dualmon.Checked && use == "")
-                        touse = getrandompic(totalwidth - usedwidth);
+                        touse = getrandompic(getwidth(totalwidth - usedwidth), i);
                     else
                         touse = file;
 
@@ -370,7 +397,7 @@ namespace DesktopSwitcher
         /// gets random picture from directory based on given max width, if picture is close enough to max width that the scaling will be correct, picture is returned, even if the width is greater than maxwidth
         /// </summary>
         /// <param name="maxwidth">maximum picture width that is returned; any size = 0</param>
-        private string getrandompic(int maxwidth)
+        private string getrandompic(int maxwidth, int screen)
         {
             bool ok = true;
             //ArrayList pics = dir.getlist();
@@ -421,11 +448,44 @@ namespace DesktopSwitcher
                 c = new Random().Next(pics.Count);
                 temp = (FileInfo)pics[c];
                 b = new Bitmap(temp.FullName);
-                if (b.Width > maxwidth && !sameratio(ref b, maxwidth, allheight))
-                    ok = false;
+
+                int j = screen;
+                int workingwidth = desktops[screen].Bounds.Width;
+                int workingheight = desktops[screen].Bounds.Height;
+                if (b.Width > desktops[screen].Bounds.Width && !sameratio(ref b, screen, (double)usebox.Value) && desktops.Length > 1)
+                {
+                    int i = screen;
+                    while (i < desktops.Length - 1 && b.Width > workingwidth && !sameratio(ref b, workingwidth, workingheight, (double)usebox.Value))
+                    {
+                        i++;
+                        j++;
+                        workingwidth = widthofscreens(screen, i);
+                    }
+                    if (!sameratio(ref b, workingwidth, workingheight, (double)usebox.Value))
+                        if (b.Width >= workingwidth)
+                        { }
+                        else
+                        {
+                            workingwidth -= desktops[i].Bounds.Width;
+                            j--;
+                        }
+                    else
+                    { }
+                    j = j - screen + 1;
+                }
                 else
-                    ok = true;
-                if (maxwidth == 0 || fail == 100)
+                    j = 1;
+                if(j == 1)
+                    if (b.Width > maxwidth && !sameratio(ref b, maxwidth, allheight, (double)ratiobox.Value) || !sameratio(ref b, desktops[screen].Bounds.Width, desktops[screen].Bounds.Height, (double)usebox.Value))
+                        ok = false;
+                    else
+                        ok = true;
+                else
+                    if (b.Width > maxwidth && !sameratio(ref b, maxwidth, allheight, (double)ratiobox.Value))
+                        ok = false;
+                    else
+                        ok = true;
+                if (maxwidth == 0 && sameratio(ref b, maxwidth, allheight, (double)usebox.Value) || fail == 100)
                     ok = true;
                 b.Dispose();
                 fail++;
@@ -494,16 +554,16 @@ namespace DesktopSwitcher
                 return 1;
             }
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
-            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen) && desktops.Length > 1)
+            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen, (double)ratiobox.Value) && desktops.Length > 1)
             {
             int i = screen;
-                while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight))
+            while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
                 {
                     i++;
                     j++;
                     workingwidth = widthofscreens(screen, i);
                 }
-                if (!sameratio(ref picin, workingwidth, workingheight))
+                if (!sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
                     if (picin.Width >= workingwidth)
                         action = 0;
                     else
@@ -518,7 +578,7 @@ namespace DesktopSwitcher
             else
                 j = 1;
 
-            if(sameratio(ref picin, workingwidth, workingheight))
+            if (sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
                 action = 1;
 
             int realheight = picin.Height;
