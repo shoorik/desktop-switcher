@@ -67,6 +67,7 @@
             this.denombox = new System.Windows.Forms.ComboBox();
             this.usebox = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.winstart = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -135,7 +136,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -144,6 +145,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dualmon,
             this.autostart,
+            this.winstart,
             this.startmintool,
             this.subdirs,
             this.statenable,
@@ -166,7 +168,6 @@
             // 
             // autostart
             // 
-            this.autostart.CheckOnClick = true;
             this.autostart.Name = "autostart";
             this.autostart.Size = new System.Drawing.Size(191, 22);
             this.autostart.Text = "Start Automatically";
@@ -399,6 +400,13 @@
             this.label4.TabIndex = 14;
             this.label4.Text = "Use Tolerance:";
             // 
+            // winstart
+            // 
+            this.winstart.Name = "winstart";
+            this.winstart.Size = new System.Drawing.Size(191, 22);
+            this.winstart.Text = "Start with Windows";
+            this.winstart.Click += new System.EventHandler(this.winstart_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -414,8 +422,8 @@
             this.Controls.Add(this.gobutton);
             this.Controls.Add(this.dirbutton);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.choose);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.choose);
             this.Controls.Add(this.changebutton);
             this.Controls.Add(this.dirtb);
             this.Controls.Add(this.label2);
@@ -478,6 +486,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.NumericUpDown usebox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ToolStripMenuItem winstart;
     }
 }
 

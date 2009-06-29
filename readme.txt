@@ -26,6 +26,8 @@ won't work correctly if there are two rows of monitors
 
 
 changelog:
+06/28/09:	added start with windows option(don't change file location after checking or you'll have to do it again)
+			added error message for registry failure
 01/14/09:	streamlined diagnostic
 			temporarily fixed bug that would mess up when one monitor was lower than others
 			added display change detection (only really useful for tablet pc's)

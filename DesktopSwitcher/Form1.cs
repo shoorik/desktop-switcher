@@ -66,8 +66,12 @@ namespace DesktopSwitcher
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
                 ourkey.Close();
+                RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                if (startup.GetValue("SchDesktopSwitcher") != null)
+                    winstart.Checked = true;
+                startup.Close();
             }
-            catch (Exception x) { x.ToString(); }
+            catch (Exception x) { x.ToString(); MessageBox.Show("Error with the registry, either this is the first time you've run this program, or the program can't access your registry(UAC)"); }
 
             if (startmintool.Checked)
                 this.WindowState = FormWindowState.Minimized;
@@ -802,6 +806,26 @@ namespace DesktopSwitcher
             if (getpicdialog.ShowDialog() == DialogResult.OK)
                 changepaper(getpicdialog.FileName);
             selecting = false;
+        }
+
+        private void winstart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                if (winstart.Checked)
+                {
+                    winstart.Checked = false;
+                    startup.DeleteValue("SchDesktopSwitcher");
+                }
+                else
+                {
+                    winstart.Checked = true;
+                    startup.SetValue("SchDesktopSwitcher", Application.ExecutablePath.ToString());
+                }
+                startup.Close();
+            }
+            catch (Exception x) { MessageBox.Show(x.ToString()); }
         }
     }
 }
