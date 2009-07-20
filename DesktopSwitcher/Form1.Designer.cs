@@ -40,6 +40,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dualmon = new System.Windows.Forms.ToolStripMenuItem();
             this.autostart = new System.Windows.Forms.ToolStripMenuItem();
+            this.winstart = new System.Windows.Forms.ToolStripMenuItem();
             this.startmintool = new System.Windows.Forms.ToolStripMenuItem();
             this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
             this.statenable = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,7 +68,6 @@
             this.denombox = new System.Windows.Forms.ComboBox();
             this.usebox = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
-            this.winstart = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -136,7 +136,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -168,9 +168,17 @@
             // 
             // autostart
             // 
+            this.autostart.CheckOnClick = true;
             this.autostart.Name = "autostart";
             this.autostart.Size = new System.Drawing.Size(191, 22);
             this.autostart.Text = "Start Automatically";
+            // 
+            // winstart
+            // 
+            this.winstart.Name = "winstart";
+            this.winstart.Size = new System.Drawing.Size(191, 22);
+            this.winstart.Text = "Start with Windows";
+            this.winstart.Click += new System.EventHandler(this.winstart_Click);
             // 
             // startmintool
             // 
@@ -399,13 +407,6 @@
             this.label4.Size = new System.Drawing.Size(80, 13);
             this.label4.TabIndex = 14;
             this.label4.Text = "Use Tolerance:";
-            // 
-            // winstart
-            // 
-            this.winstart.Name = "winstart";
-            this.winstart.Size = new System.Drawing.Size(191, 22);
-            this.winstart.Text = "Start with Windows";
-            this.winstart.Click += new System.EventHandler(this.winstart_Click);
             // 
             // Form1
             // 
