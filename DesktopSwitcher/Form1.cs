@@ -454,6 +454,7 @@ namespace DesktopSwitcher
         /// </summary>
         private void parseParse()
         {
+            pictures.Clear();
             try
             {
                 TextReader r = new StreamReader(dirtb.Text + "\\parse.txt");
@@ -461,6 +462,7 @@ namespace DesktopSwitcher
                 while ((temp = r.ReadLine()) != null)
                     pictures.Add(new picture(temp, int.Parse(r.ReadLine()), int.Parse(r.ReadLine()), ""));
                 r.Close();
+                addToLog(pictures.Count.ToString() + " pictures in library");
             }
             catch (Exception x)
             {
@@ -480,8 +482,6 @@ namespace DesktopSwitcher
             if (complete)
                 pictures.Clear();
             addToLog("Updating Library");
-            int newpics = 0;
-            int delpics = 0;
             getdirpics();
             List<string> name = new List<string>();
             foreach(string f in dirpics)
@@ -493,10 +493,7 @@ namespace DesktopSwitcher
             {
                 int index;
                 if ((index = name.IndexOf(p.getfilename())) == -1)
-                {
-                    delpics++;
                     toremove.Add(p);
-                }
                 else
                     name.RemoveAt(index);                
             }
@@ -504,13 +501,16 @@ namespace DesktopSwitcher
                 pictures.Remove(p);
             //add all remaining names to pictures
             Bitmap b;
+            pb1.Visible = true;
+            pb1.Maximum = name.Count;
+            pb1.Value = 0;
             foreach(string s in name)
             {
                 b = new Bitmap(s);
                 pictures.Add(new picture(s,b.Height, b.Width, ""));
                 b.Dispose();
+                pb1.Value++;
                 Application.DoEvents();
-                newpics++;
             }
             TextWriter w = new StreamWriter(dirtb.Text + "\\parse.txt",false);
             foreach (picture p in pictures)
@@ -520,8 +520,9 @@ namespace DesktopSwitcher
                 w.WriteLine(p.getwidth());
             }
             w.Close();
-            addToLog(newpics.ToString() + " added");
-            addToLog(delpics.ToString() + " deleted");
+            addToLog(name.Count.ToString() + " added");
+            addToLog(toremove.Count.ToString() + " deleted");
+            pb1.Visible = false;
         }
 
         /// <summary>
@@ -1008,6 +1009,8 @@ namespace DesktopSwitcher
             }
             else
             {
+                if (System.IO.File.Exists(dirtb.Text + "\\" + "parse.txt"))
+                    parseParse();
                 parsepics(false);
                 alwaysparse.Checked = true;
             }

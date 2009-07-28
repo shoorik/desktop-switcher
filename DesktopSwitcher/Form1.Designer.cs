@@ -49,10 +49,10 @@
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rescanDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
-            this.parseDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
             this.autoparse = new System.Windows.Forms.ToolStripMenuItem();
+            this.parseDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,6 +67,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.traychange = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateLibraryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exit = new System.Windows.Forms.ToolStripMenuItem();
             this.ratiobox = new System.Windows.Forms.NumericUpDown();
@@ -77,7 +78,7 @@
             this.loglabel = new System.Windows.Forms.Label();
             this.textlog = new System.Windows.Forms.RichTextBox();
             this.logshow = new System.Windows.Forms.Button();
-            this.updateLibraryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pb1 = new System.Windows.Forms.ProgressBar();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -249,20 +250,6 @@
             this.parseToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.parseToolStripMenuItem.Text = "Parse";
             // 
-            // alwaysparse
-            // 
-            this.alwaysparse.Name = "alwaysparse";
-            this.alwaysparse.Size = new System.Drawing.Size(169, 22);
-            this.alwaysparse.Text = "Always use Parse";
-            this.alwaysparse.Click += new System.EventHandler(this.alwaysparse_Click);
-            // 
-            // parseDirectoryToolStripMenuItem1
-            // 
-            this.parseDirectoryToolStripMenuItem1.Name = "parseDirectoryToolStripMenuItem1";
-            this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
-            this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
-            this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
-            // 
             // updateLibraryToolStripMenuItem
             // 
             this.updateLibraryToolStripMenuItem.Name = "updateLibraryToolStripMenuItem";
@@ -270,12 +257,26 @@
             this.updateLibraryToolStripMenuItem.Text = "Update Library";
             this.updateLibraryToolStripMenuItem.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem_Click);
             // 
+            // alwaysparse
+            // 
+            this.alwaysparse.Name = "alwaysparse";
+            this.alwaysparse.Size = new System.Drawing.Size(169, 22);
+            this.alwaysparse.Text = "Always use Parse";
+            this.alwaysparse.Click += new System.EventHandler(this.alwaysparse_Click);
+            // 
             // autoparse
             // 
             this.autoparse.CheckOnClick = true;
             this.autoparse.Name = "autoparse";
             this.autoparse.Size = new System.Drawing.Size(169, 22);
             this.autoparse.Text = "Update at Start";
+            // 
+            // parseDirectoryToolStripMenuItem1
+            // 
+            this.parseDirectoryToolStripMenuItem1.Name = "parseDirectoryToolStripMenuItem1";
+            this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
+            this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
+            this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
             // 
             // screenslist
             // 
@@ -368,7 +369,7 @@
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 136);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 114);
             // 
             // traychange
             // 
@@ -384,6 +385,13 @@
             this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
             this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
             this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
+            // 
+            // updateLibraryToolStripMenuItem1
+            // 
+            this.updateLibraryToolStripMenuItem1.Name = "updateLibraryToolStripMenuItem1";
+            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.updateLibraryToolStripMenuItem1.Text = "Update Library";
+            this.updateLibraryToolStripMenuItem1.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem1_Click);
             // 
             // restoreToolStripMenuItem
             // 
@@ -494,12 +502,13 @@
             this.logshow.UseVisualStyleBackColor = true;
             this.logshow.MouseDown += new System.Windows.Forms.MouseEventHandler(this.logshow_MouseDown);
             // 
-            // updateLibraryToolStripMenuItem1
+            // pb1
             // 
-            this.updateLibraryToolStripMenuItem1.Name = "updateLibraryToolStripMenuItem1";
-            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
-            this.updateLibraryToolStripMenuItem1.Text = "Update Library";
-            this.updateLibraryToolStripMenuItem1.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem1_Click);
+            this.pb1.Location = new System.Drawing.Point(5, 114);
+            this.pb1.Name = "pb1";
+            this.pb1.Size = new System.Drawing.Size(85, 15);
+            this.pb1.TabIndex = 19;
+            this.pb1.Visible = false;
             // 
             // Form1
             // 
@@ -507,6 +516,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(403, 136);
+            this.Controls.Add(this.pb1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.logshow);
             this.Controls.Add(this.loglabel);
@@ -594,6 +604,7 @@
         private System.Windows.Forms.ToolStripMenuItem updateLibraryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoparse;
         private System.Windows.Forms.ToolStripMenuItem updateLibraryToolStripMenuItem1;
+        private System.Windows.Forms.ProgressBar pb1;
     }
 }
 
