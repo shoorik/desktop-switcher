@@ -47,6 +47,12 @@
             this.showtips = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rescanDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.parseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
+            this.parseDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoparse = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,6 +74,10 @@
             this.denombox = new System.Windows.Forms.ComboBox();
             this.usebox = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.loglabel = new System.Windows.Forms.Label();
+            this.textlog = new System.Windows.Forms.RichTextBox();
+            this.logshow = new System.Windows.Forms.Button();
+            this.updateLibraryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -77,7 +87,7 @@
             // 
             // dirtb
             // 
-            this.dirtb.Location = new System.Drawing.Point(70, 32);
+            this.dirtb.Location = new System.Drawing.Point(65, 32);
             this.dirtb.Name = "dirtb";
             this.dirtb.Size = new System.Drawing.Size(295, 20);
             this.dirtb.TabIndex = 3;
@@ -85,7 +95,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 35);
+            this.label2.Location = new System.Drawing.Point(7, 35);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(52, 13);
             this.label2.TabIndex = 2;
@@ -93,7 +103,7 @@
             // 
             // dirbutton
             // 
-            this.dirbutton.Location = new System.Drawing.Point(376, 30);
+            this.dirbutton.Location = new System.Drawing.Point(371, 30);
             this.dirbutton.Name = "dirbutton";
             this.dirbutton.Size = new System.Drawing.Size(28, 23);
             this.dirbutton.TabIndex = 4;
@@ -104,7 +114,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(40, 60);
+            this.label3.Location = new System.Drawing.Point(35, 60);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 5;
@@ -121,7 +131,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(409, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(403, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -151,7 +161,9 @@
             this.statenable,
             this.showtips,
             this.toolStripSeparator1,
-            this.diagnosticToolStripMenuItem});
+            this.diagnosticToolStripMenuItem,
+            this.rescanDirectoryToolStripMenuItem,
+            this.parseToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -220,6 +232,51 @@
             this.diagnosticToolStripMenuItem.Text = "Screen Diagnostic";
             this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
             // 
+            // rescanDirectoryToolStripMenuItem
+            // 
+            this.rescanDirectoryToolStripMenuItem.Name = "rescanDirectoryToolStripMenuItem";
+            this.rescanDirectoryToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.rescanDirectoryToolStripMenuItem.Text = "Rescan Directory";
+            // 
+            // parseToolStripMenuItem
+            // 
+            this.parseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.updateLibraryToolStripMenuItem,
+            this.alwaysparse,
+            this.autoparse,
+            this.parseDirectoryToolStripMenuItem1});
+            this.parseToolStripMenuItem.Name = "parseToolStripMenuItem";
+            this.parseToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.parseToolStripMenuItem.Text = "Parse";
+            // 
+            // alwaysparse
+            // 
+            this.alwaysparse.Name = "alwaysparse";
+            this.alwaysparse.Size = new System.Drawing.Size(169, 22);
+            this.alwaysparse.Text = "Always use Parse";
+            this.alwaysparse.Click += new System.EventHandler(this.alwaysparse_Click);
+            // 
+            // parseDirectoryToolStripMenuItem1
+            // 
+            this.parseDirectoryToolStripMenuItem1.Name = "parseDirectoryToolStripMenuItem1";
+            this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
+            this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
+            this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
+            // 
+            // updateLibraryToolStripMenuItem
+            // 
+            this.updateLibraryToolStripMenuItem.Name = "updateLibraryToolStripMenuItem";
+            this.updateLibraryToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.updateLibraryToolStripMenuItem.Text = "Update Library";
+            this.updateLibraryToolStripMenuItem.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem_Click);
+            // 
+            // autoparse
+            // 
+            this.autoparse.CheckOnClick = true;
+            this.autoparse.Name = "autoparse";
+            this.autoparse.Size = new System.Drawing.Size(169, 22);
+            this.autoparse.Text = "Update at Start";
+            // 
             // screenslist
             // 
             this.screenslist.Name = "screenslist";
@@ -242,7 +299,7 @@
             // 
             // changebutton
             // 
-            this.changebutton.Location = new System.Drawing.Point(329, 62);
+            this.changebutton.Location = new System.Drawing.Point(324, 62);
             this.changebutton.Name = "changebutton";
             this.changebutton.Size = new System.Drawing.Size(75, 41);
             this.changebutton.TabIndex = 9;
@@ -252,7 +309,7 @@
             // 
             // gobutton
             // 
-            this.gobutton.Location = new System.Drawing.Point(10, 80);
+            this.gobutton.Location = new System.Drawing.Point(5, 80);
             this.gobutton.Name = "gobutton";
             this.gobutton.Size = new System.Drawing.Size(75, 23);
             this.gobutton.TabIndex = 0;
@@ -262,7 +319,7 @@
             // 
             // timernum
             // 
-            this.timernum.Location = new System.Drawing.Point(88, 58);
+            this.timernum.Location = new System.Drawing.Point(83, 58);
             this.timernum.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -284,7 +341,7 @@
             // 
             // choose
             // 
-            this.choose.Location = new System.Drawing.Point(248, 62);
+            this.choose.Location = new System.Drawing.Point(243, 62);
             this.choose.Name = "choose";
             this.choose.Size = new System.Drawing.Size(75, 41);
             this.choose.TabIndex = 12;
@@ -307,10 +364,11 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.traychange,
             this.currentPicturesToolStripMenuItem1,
+            this.updateLibraryToolStripMenuItem1,
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 136);
             // 
             // traychange
             // 
@@ -343,7 +401,7 @@
             // 
             // ratiobox
             // 
-            this.ratiobox.Location = new System.Drawing.Point(193, 83);
+            this.ratiobox.Location = new System.Drawing.Point(188, 83);
             this.ratiobox.Maximum = new decimal(new int[] {
             99,
             0,
@@ -361,7 +419,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(101, 85);
+            this.label1.Location = new System.Drawing.Point(96, 85);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(88, 13);
             this.label1.TabIndex = 14;
@@ -377,14 +435,14 @@
             "Minutes",
             "Hours",
             "Days"});
-            this.denombox.Location = new System.Drawing.Point(146, 57);
+            this.denombox.Location = new System.Drawing.Point(141, 57);
             this.denombox.Name = "denombox";
             this.denombox.Size = new System.Drawing.Size(80, 21);
             this.denombox.TabIndex = 15;
             // 
             // usebox
             // 
-            this.usebox.Location = new System.Drawing.Point(193, 109);
+            this.usebox.Location = new System.Drawing.Point(188, 109);
             this.usebox.Maximum = new decimal(new int[] {
             99,
             0,
@@ -402,19 +460,58 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(101, 111);
+            this.label4.Location = new System.Drawing.Point(96, 111);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(80, 13);
             this.label4.TabIndex = 14;
             this.label4.Text = "Use Tolerance:";
+            // 
+            // loglabel
+            // 
+            this.loglabel.AutoSize = true;
+            this.loglabel.Location = new System.Drawing.Point(2, 134);
+            this.loglabel.Name = "loglabel";
+            this.loglabel.Size = new System.Drawing.Size(0, 13);
+            this.loglabel.TabIndex = 16;
+            // 
+            // textlog
+            // 
+            this.textlog.Location = new System.Drawing.Point(10, 135);
+            this.textlog.Name = "textlog";
+            this.textlog.ReadOnly = true;
+            this.textlog.Size = new System.Drawing.Size(382, 208);
+            this.textlog.TabIndex = 17;
+            this.textlog.Text = "";
+            this.textlog.Visible = false;
+            // 
+            // logshow
+            // 
+            this.logshow.Location = new System.Drawing.Point(243, 106);
+            this.logshow.Name = "logshow";
+            this.logshow.Size = new System.Drawing.Size(75, 23);
+            this.logshow.TabIndex = 18;
+            this.logshow.Text = "Show Log";
+            this.logshow.UseVisualStyleBackColor = true;
+            this.logshow.MouseDown += new System.Windows.Forms.MouseEventHandler(this.logshow_MouseDown);
+            // 
+            // updateLibraryToolStripMenuItem1
+            // 
+            this.updateLibraryToolStripMenuItem1.Name = "updateLibraryToolStripMenuItem1";
+            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.updateLibraryToolStripMenuItem1.Text = "Update Library";
+            this.updateLibraryToolStripMenuItem1.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem1_Click);
             // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(409, 135);
+            this.ClientSize = new System.Drawing.Size(403, 136);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.logshow);
+            this.Controls.Add(this.loglabel);
+            this.Controls.Add(this.textlog);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.denombox);
             this.Controls.Add(this.ratiobox);
@@ -422,12 +519,11 @@
             this.Controls.Add(this.timernum);
             this.Controls.Add(this.gobutton);
             this.Controls.Add(this.dirbutton);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.choose);
             this.Controls.Add(this.changebutton);
             this.Controls.Add(this.dirtb);
-            this.Controls.Add(this.label2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -488,6 +584,16 @@
         private System.Windows.Forms.NumericUpDown usebox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolStripMenuItem winstart;
+        private System.Windows.Forms.Label loglabel;
+        private System.Windows.Forms.ToolStripMenuItem rescanDirectoryToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox textlog;
+        private System.Windows.Forms.Button logshow;
+        private System.Windows.Forms.ToolStripMenuItem parseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem alwaysparse;
+        private System.Windows.Forms.ToolStripMenuItem parseDirectoryToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem updateLibraryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoparse;
+        private System.Windows.Forms.ToolStripMenuItem updateLibraryToolStripMenuItem1;
     }
 }
 

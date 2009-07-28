@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using System.Xml.Serialization;
 
 namespace DesktopSwitcher
 {
@@ -35,8 +36,10 @@ namespace DesktopSwitcher
         bool selecting = false;
         stats stat;
         bool randompicking = false;
-        List<string> pictures = new List<string>();
-        ArrayList dirpics;
+        List<picture> pictures = new List<picture>();
+        List<string> dirpics;        
+        ArrayList log = new ArrayList();
+        bool useParse = false;
         //directory dir;
         //picture lastpic;
 
@@ -65,6 +68,8 @@ namespace DesktopSwitcher
                 autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
                 subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
                 showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
+                alwaysparse.Checked = bool.Parse((string)ourkey.GetValue("parse"));
+                autoparse.Checked = bool.Parse((string)ourkey.GetValue("autoparse"));
                 ourkey.Close();
                 RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 if (startup.GetValue("SchDesktopSwitcher") != null)
@@ -72,15 +77,23 @@ namespace DesktopSwitcher
                 startup.Close();
             }
             catch (Exception x) { x.ToString(); MessageBox.Show("Error with the registry, either this is the first time you've run this program, or the program can't access your registry(UAC)"); }
-
+            log.Capacity = 50;
             if (startmintool.Checked)
                 this.WindowState = FormWindowState.Minimized;
+            if (useParse = alwaysparse.Checked)
+                parseParse();
+            else
+            {
+                autoparse.Checked = false;
+                getdirpics();
+            }
+            if (autoparse.Checked)
+                parsepics(false);
             getscreens();
             if (autostart.Checked)
                 start_timer();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
             stat = new stats(dirtb.Text);
-            dirpics = getdirpics();
             //dir = new directory(dirtb.Text);
             //lastpic = dir.getpic(0);
         }
@@ -133,20 +146,26 @@ namespace DesktopSwitcher
 
         private void regsave()
         {
-            RegistryKey ourkey = Registry.Users;
-            ourkey = ourkey.CreateSubKey(@".DEFAULT\Software\Schraitle\Desktop");
-            ourkey.OpenSubKey(@".DEFAULT\Software\Schraitle\Desktop", true);
-            ourkey.SetValue("dir", dirtb.Text);
-            ourkey.SetValue("interval", timernum.Value);
-            ourkey.SetValue("startmin", startmintool.Checked);
-            ourkey.SetValue("denomindex", denombox.SelectedIndex);
-            ourkey.SetValue("dualmon", dualmon.Checked);
-            ourkey.SetValue("ratio", ratiobox.Value);
-            ourkey.SetValue("use", usebox.Value);
-            ourkey.SetValue("autostart", autostart.Checked);
-            ourkey.SetValue("subdirs", subdirs.Checked);
-            ourkey.SetValue("balloon", showtips.Checked);
-            ourkey.Close();
+            try
+            {
+                RegistryKey ourkey = Registry.Users;
+                ourkey = ourkey.CreateSubKey(@".DEFAULT\Software\Schraitle\Desktop");
+                ourkey.OpenSubKey(@".DEFAULT\Software\Schraitle\Desktop", true);
+                ourkey.SetValue("dir", dirtb.Text);
+                ourkey.SetValue("interval", timernum.Value);
+                ourkey.SetValue("startmin", startmintool.Checked);
+                ourkey.SetValue("denomindex", denombox.SelectedIndex);
+                ourkey.SetValue("dualmon", dualmon.Checked);
+                ourkey.SetValue("ratio", ratiobox.Value);
+                ourkey.SetValue("use", usebox.Value);
+                ourkey.SetValue("autostart", autostart.Checked);
+                ourkey.SetValue("subdirs", subdirs.Checked);
+                ourkey.SetValue("balloon", showtips.Checked);
+                ourkey.SetValue("parse", alwaysparse.Checked);
+                ourkey.SetValue("autoparse", autoparse.Checked);
+                ourkey.Close();
+            }
+            catch (Exception x) { x.ToString(); }
         }
 
         /// <summary>
@@ -197,7 +216,13 @@ namespace DesktopSwitcher
         /// <returns></returns>
         private bool sameratio(ref Bitmap b, int screen, double value)
         {
-            return (getratio(ref b) >= getratio(screen) - (value / 100 * getratio(screen)) && getratio(ref b) <= getratio(screen) + (value / 100 * getratio(screen)));
+            double screenRatio = getratio(screen);
+            double imgRatio = getratio(ref b);
+            if (screenRatio < imgRatio)
+                return ((screenRatio / imgRatio) + (double)(value / 100) >= 1);
+            else
+                return ((imgRatio / screenRatio) + (double)(value / 100) >= 1);
+            //return (getratio(ref b) >= getratio(screen) - (value / 100 * getratio(screen)) && getratio(ref b) <= getratio(screen) + (value / 100 * getratio(screen)));
         }
 
         /// <summary>
@@ -209,21 +234,48 @@ namespace DesktopSwitcher
         /// <returns></returns>
         private bool sameratio(ref Bitmap b, double x, double y, double value)
         {
-            return (getratio(ref b) >= x/y - (value / 100 * x/y) && getratio(ref b) <= x/y + (value / 100 * x/y));
+            double screenRatio = x / y;
+            double imgRatio = getratio(ref b);
+            if (screenRatio < imgRatio)
+                return ((screenRatio / imgRatio) + (double)(value / 100) >= 1);
+            else
+                return ((imgRatio / screenRatio) + (double)(value / 100) >= 1);
+            //return (getratio(ref b) >= x/y - (value / 100 * x/y) && getratio(ref b) <= x/y + (value / 100 * x/y));
         }
 
         /// <summary>
-        /// determines if ratio of dimensions is close enough to dimensions given
+        /// determines whether or not the ratio of the picture is close enough to the ratio of the screen
+        /// </summary>
+        /// <param name="b">bitmap to test</param>
+        /// <param name="screen">index of the screen in the desktop array</param>
+        /// <returns></returns>
+        private bool sameratio(picture b, int screen, double value)
+        {
+            double screenRatio = getratio(screen);
+            double imgRatio = (double)b.getwidth()/(double)b.getheight();
+            if (screenRatio < imgRatio)
+                return ((screenRatio / imgRatio) + (value / 100) >= 1);
+            else
+                return ((imgRatio / screenRatio) + (value / 100) >= 1);
+            //return (getratio(ref b) >= getratio(screen) - (value / 100 * getratio(screen)) && getratio(ref b) <= getratio(screen) + (value / 100 * getratio(screen)));
+        }
+
+        /// <summary>
+        /// determines if ratio of bitmap is close enough to dimensions given
         /// </summary>
         /// <param name="b">bitmap to test</param>
         /// <param name="x">width dimension</param>
         /// <param name="y">height dimension</param>
         /// <returns></returns>
-        private bool sameratio(int xtemp, int ytemp, double x, double y, double value)
+        private bool sameratio(picture b, double x, double y, double value)
         {
-            double x1 = (double)xtemp;
-            double y1 = (double)ytemp;
-            return ((x1/y1) >= x / y - ((double)ratiobox.Value / 100 * x / y) && (x1/y1) <= x / y + ((double)ratiobox.Value / 100 * x / y));
+            double screenRatio = x / y;
+            double imgRatio = (double)b.getwidth() / (double)b.getheight();
+            if (screenRatio < imgRatio)
+                return ((screenRatio / imgRatio) + (value / 100) >= 1);
+            else
+                return ((imgRatio / screenRatio) + (value / 100) >= 1);
+            //return (getratio(ref b) >= x/y - (value / 100 * x/y) && getratio(ref b) <= x/y + (value / 100 * x/y));
         }
         #endregion
 
@@ -270,17 +322,20 @@ namespace DesktopSwitcher
         /// <param name="use">file name and path to use for wallpaper, for random image, use ""</param>
         private void changepaper(string use)
         {
+            addToLog("===========================================================");
+            addToLog("Start: " + DateTime.Now.ToString());
+            addToLog("===========================================================");
             string path = dirtb.Text + "\\Background.bmp";
             File.Delete(dirtb.Text + "\\Background.bmp");
             Bitmap final = new Bitmap(totalwidth, allheight);
             string file = use;
-            pictures.Clear();
+            //pictures.Clear();
             if (use == "")
             {
                 file = getrandompic(getwidth(0), 0);
                 randompicking = true;
             }
-            pictures.Add(file);
+            //pictures.Add(file);
             pics = "Screen 1: " + file;
             if (randompicking && statenable.Checked)
                 stat.addpicture(file);
@@ -312,7 +367,7 @@ namespace DesktopSwitcher
                 if (usedpic)
                 {
                     pics += "\nScreen " + (i) + ": " + touse;
-                    pictures.Add(touse);
+                    //pictures.Add(touse);
                     if(randompicking && statenable.Checked)
                         stat.addpicture(touse);
                 }
@@ -345,10 +400,7 @@ namespace DesktopSwitcher
                 
             setwallpaper(path, 1, 0);
             if (showtips.Checked)
-            {
-                trayicon.BalloonTipText = pics;
-                trayicon.ShowBalloonTip(10000,"", pics, ToolTipIcon.Info);
-            }
+                trayicon.ShowBalloonTip(10000,"Pictures", pics, ToolTipIcon.Info);
             final.Dispose();
             newfinal.Dispose();
             b.Dispose();
@@ -383,18 +435,93 @@ namespace DesktopSwitcher
         /// <summary>
         /// puts pictures from current directory into an arraylist
         /// </summary>
-        /// <returns>ArrayList containing all pictures from directory</returns>
-        private ArrayList getdirpics()
+        private void getdirpics()
         {
-            ArrayList pics = new ArrayList();
+            dirpics = new List<string>();
             DirectoryInfo di = new DirectoryInfo(dirtb.Text);
-            FileInfo[] all = di.GetFiles();
+            FileInfo[] all;
             if (subdirs.Checked)
                 all = di.GetFiles("*.*", SearchOption.AllDirectories);
+            else
+                all = di.GetFiles();
             foreach (FileInfo f in all)
                 if (exts.Contains(f.Extension.ToLower()) && f.Extension != "" && f.FullName != (dirtb.Text + "\\Background.bmp"))
-                    pics.Add(f);
-            return pics;
+                    dirpics.Add(f.FullName);
+        }
+
+        /// <summary>
+        /// parses the parse.txt file in the selected directory, or goes to the regular system on failure
+        /// </summary>
+        private void parseParse()
+        {
+            try
+            {
+                TextReader r = new StreamReader(dirtb.Text + "\\parse.txt");
+                string temp;
+                while ((temp = r.ReadLine()) != null)
+                    pictures.Add(new picture(temp, int.Parse(r.ReadLine()), int.Parse(r.ReadLine()), ""));
+                r.Close();
+            }
+            catch (Exception x)
+            {
+                useParse = false;
+                autoparse.Checked = false;
+                getdirpics();
+                MessageBox.Show("Error parsing parse.txt, using regular picture selection system\n" + x.Message);
+            }
+        }
+
+        /// <summary>
+        /// parses the height and width of each picture in current directory, as well as adding new pictures and deleting old ones
+        /// </summary>
+        /// <param name="complete">when true, will parse entire directory fresh and add everything</param>
+        private void parsepics(bool complete)
+        {
+            if (complete)
+                pictures.Clear();
+            addToLog("Updating Library");
+            int newpics = 0;
+            int delpics = 0;
+            getdirpics();
+            List<string> name = new List<string>();
+            foreach(string f in dirpics)
+                name.Add(f);
+            //search new names for old names and take them out of list
+            //find old names that aren't in new names and delete them
+            List<picture> toremove = new List<picture>();
+            foreach(picture p in pictures)
+            {
+                int index;
+                if ((index = name.IndexOf(p.getfilename())) == -1)
+                {
+                    delpics++;
+                    toremove.Add(p);
+                }
+                else
+                    name.RemoveAt(index);                
+            }
+            foreach (picture p in toremove)
+                pictures.Remove(p);
+            //add all remaining names to pictures
+            Bitmap b;
+            foreach(string s in name)
+            {
+                b = new Bitmap(s);
+                pictures.Add(new picture(s,b.Height, b.Width, ""));
+                b.Dispose();
+                Application.DoEvents();
+                newpics++;
+            }
+            TextWriter w = new StreamWriter(dirtb.Text + "\\parse.txt",false);
+            foreach (picture p in pictures)
+            {
+                w.WriteLine(p.getfilename());
+                w.WriteLine(p.getheight());
+                w.WriteLine(p.getwidth());
+            }
+            w.Close();
+            addToLog(newpics.ToString() + " added");
+            addToLog(delpics.ToString() + " deleted");
         }
 
         /// <summary>
@@ -406,18 +533,13 @@ namespace DesktopSwitcher
             bool ok = true;
             //ArrayList pics = dir.getlist();
             //picture temp;
-            ArrayList pics = new ArrayList();
-            DirectoryInfo di = new DirectoryInfo(dirtb.Text);
-            FileInfo[] all = di.GetFiles();
-            if (subdirs.Checked)
-                all = di.GetFiles("*.*", SearchOption.AllDirectories);
-            foreach (FileInfo f in all)
-                if (exts.Contains(f.Extension.ToLower()) && f.Extension != "")
-                    pics.Add(f);
-            FileInfo temp;
-            Bitmap b;
+            picture b;
             int fail = 0;
-            int failpoint = pics.Count-1;
+            int failpoint;
+            if(useParse)
+                failpoint = pictures.Count-1;
+            else
+                failpoint = dirpics.Count-1;
             //DateTime start = DateTime.Now;
             int c = 0;
             do
@@ -449,24 +571,31 @@ namespace DesktopSwitcher
                     ok = true;
                 fail++;*/
 
-                c = new Random().Next(pics.Count);
-                temp = (FileInfo)pics[c];
-                b = new Bitmap(temp.FullName);
-
+                if (useParse)
+                {
+                    c = new Random().Next(pictures.Count);
+                    b = (picture)pictures[c];
+                }
+                else
+                {
+                    c = new Random().Next(dirpics.Count);
+                    b = new picture((string)dirpics[c]);
+                }
+                System.Threading.Thread.Sleep(1);
                 int j = screen;
                 int workingwidth = desktops[screen].Bounds.Width;
                 int workingheight = desktops[screen].Bounds.Height;
-                if (b.Width > desktops[screen].Bounds.Width && !sameratio(ref b, screen, (double)usebox.Value) && desktops.Length > 1)
+                if (b.getwidth() > desktops[screen].Bounds.Width && !sameratio(b, screen, (double)usebox.Value) && desktops.Length > 1)
                 {
                     int i = screen;
-                    while (i < desktops.Length - 1 && b.Width > workingwidth && !sameratio(ref b, workingwidth, workingheight, (double)usebox.Value))
+                    while (i < desktops.Length - 1 && b.getwidth() > workingwidth && !sameratio(b, workingwidth, workingheight, (double)usebox.Value))
                     {
                         i++;
                         j++;
                         workingwidth = widthofscreens(screen, i);
                     }
-                    if (!sameratio(ref b, workingwidth, workingheight, (double)usebox.Value))
-                        if (b.Width >= workingwidth)
+                    if (!sameratio(b, workingwidth, workingheight, (double)usebox.Value))
+                        if (b.getwidth() >= workingwidth)
                         { }
                         else
                         {
@@ -480,24 +609,26 @@ namespace DesktopSwitcher
                 else
                     j = 1;
                 if(j == 1)
-                    if (b.Width > maxwidth && !sameratio(ref b, maxwidth, allheight, (double)ratiobox.Value) || !sameratio(ref b, desktops[screen].Bounds.Width, desktops[screen].Bounds.Height, (double)usebox.Value))
+                    if (b.getwidth() > maxwidth && !sameratio(b, maxwidth, workingheight, (double)usebox.Value) || !sameratio(b, desktops[screen].Bounds.Width, desktops[screen].Bounds.Height, (double)usebox.Value))
                         ok = false;
                     else
                         ok = true;
                 else
-                    if (b.Width > maxwidth && !sameratio(ref b, maxwidth, allheight, (double)ratiobox.Value))
+                    if (b.getwidth() > maxwidth && !sameratio(b, maxwidth, allheight, (double)usebox.Value))
                         ok = false;
                     else
                         ok = true;
-                if (maxwidth == 0 && sameratio(ref b, maxwidth, allheight, (double)usebox.Value) || fail == 100)
+                if (maxwidth == 0 && sameratio(b, maxwidth, allheight, (double)usebox.Value) || fail == failpoint)
                     ok = true;
-                b.Dispose();
                 fail++;
+                Application.DoEvents();
             } while (!ok);
+            //addToLog(b..Name);
+            addToLog("Screen " + screen + " Chose after " + fail.ToString() + " tries");
 
             //lastpic = temp;
             //return temp.getfilename();
-            return temp.FullName;
+            return b.getfilename();
         }
 
         private void choose_Click(object sender, EventArgs e)
@@ -657,6 +788,15 @@ namespace DesktopSwitcher
 
         }
 
+        /// <summary>
+        /// adds a new line to the output log
+        /// </summary>
+        /// <param name="toadd">text to add to log</param>
+        private void addToLog(string toadd)
+        {
+            textlog.AppendText(toadd + "\n");
+            textlog.ScrollToCaret();
+        }
 
         #region events
         private void Form1_SizeChanged(object sender, EventArgs e)
@@ -826,6 +966,57 @@ namespace DesktopSwitcher
                 startup.Close();
             }
             catch (Exception x) { MessageBox.Show(x.ToString()); }
+        }
+
+        private void logshow_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                textlog.Text = "";
+            else
+                if (logshow.Text == "Show Log")
+                {
+                    logshow.Text = "Hide Log";
+                    this.Height = 386;
+                    textlog.Visible = true;
+                }
+                else
+                {
+                    logshow.Text = "Show Log";
+                    textlog.Visible = false;
+                    this.Height = 170;                
+                }
+        }
+
+        private void parseDirectoryToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            parsepics(true);
+        }
+
+        private void updateLibraryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            parsepics(false);
+        }
+
+        private void alwaysparse_Click(object sender, EventArgs e)
+        {
+            if (alwaysparse.Checked)
+            {
+                useParse = false;
+                getdirpics();
+                alwaysparse.Checked = false;
+                autoparse.Checked = false;
+            }
+            else
+            {
+                parsepics(false);
+                alwaysparse.Checked = true;
+            }
+        }
+
+        private void updateLibraryToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            parsepics(false);
+            trayicon.ShowBalloonTip(10000, "", "Update Complete", ToolTipIcon.Info);
         }
     }
 }

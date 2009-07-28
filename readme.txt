@@ -15,6 +15,15 @@ hit the go button
 Ratio tolerance:
 if a (picture's aspect ratio) / (aspect ratio of screen) is less than set percent, the image will be stretched, otherwise it will be scaled until one side of it is the same size as the screen. this works for multiple monitors as well
 
+Use tolerance:
+if a (picture's aspect ratio) / (aspect ratio of screen) is less than set percent, it will be ignored for consideration for that screen
+
+Parsing:
+click parse directory to use parsing until you close the program
+click always use parse to parse directory and then always use the saved parse text file to find pictures to use in the future when using this program. to turn off parsing, uncheck always use parse.
+parsing goes through the directory specified and records the filename and height and width of all pictures so that it is quickly accessible in the future. It takes a long time to parse, but afterwards, it takes less time to choose pictures. Once parsing is enabled, you can update the library when pictures are added or deleted, this will take less time than reparsing the entire directory.
+check update at start to have the program update the library every time it starts up.
+
 
 Other things:
 to start the timer when the program starts, check start automatically
@@ -26,6 +35,10 @@ won't work correctly if there are two rows of monitors
 
 
 changelog:
+07/28/09:	fixed picture ratio detection
+			added log
+			added optional parsing system that saves data to a text file
+07/20/09:	fixed start automatically so that it works now
 06/28/09:	added start with windows option(don't change file location after checking or you'll have to do it again)
 			added error message for registry failure
 01/14/09:	streamlined diagnostic

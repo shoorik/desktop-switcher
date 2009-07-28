@@ -6,12 +6,20 @@ using System.Drawing;
 
 namespace DesktopSwitcher
 {
-    class picture
+    public class picture
     {
         string filename;
         int height;
         int width;
         string colorindex;
+
+        public picture()
+        {
+            filename = "";
+            height = 0;
+            width = 0;
+            colorindex = "";
+        }
 
         public picture(string path,int h, int w, string index)
         {
