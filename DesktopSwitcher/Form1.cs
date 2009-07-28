@@ -526,6 +526,17 @@ namespace DesktopSwitcher
         }
 
         /// <summary>
+        /// goes through the steps to turn parsing off and use the regular system
+        /// </summary>
+        private void turnParseOff()
+        {
+            useParse = false;
+            autoparse.Checked = false;
+            alwaysparse.Checked = false;
+            getdirpics();
+        }
+
+        /// <summary>
         /// gets random picture from directory based on given max width, if picture is close enough to max width that the scaling will be correct, picture is returned, even if the width is greater than maxwidth
         /// </summary>
         /// <param name="maxwidth">maximum picture width that is returned; any size = 0</param>
@@ -834,6 +845,10 @@ namespace DesktopSwitcher
                     //dir.savefile();
                     //dir = new directory(dirtb.Text);
                     //label5.Text = "Messages";
+                    if (System.IO.File.Exists(dirtb.Text + "\\parse.txt") && useParse)
+                        parseParse();
+                    else
+                        turnParseOff();
                 }
                 else
                     MessageBox.Show("There are no pictures in the specified directory");
@@ -1009,9 +1024,10 @@ namespace DesktopSwitcher
             }
             else
             {
-                if (System.IO.File.Exists(dirtb.Text + "\\" + "parse.txt"))
+                if (System.IO.File.Exists(dirtb.Text + "\\parse.txt"))
                     parseParse();
                 parsepics(false);
+                useParse = true;
                 alwaysparse.Checked = true;
             }
         }
