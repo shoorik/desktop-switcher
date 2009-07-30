@@ -40,6 +40,7 @@ namespace DesktopSwitcher
         List<string> dirpics;        
         ArrayList log = new ArrayList();
         bool useParse = false;
+        string updateStats = "";
         //directory dir;
         //picture lastpic;
 
@@ -520,8 +521,9 @@ namespace DesktopSwitcher
                 w.WriteLine(p.getwidth());
             }
             w.Close();
-            addToLog(name.Count.ToString() + " added");
-            addToLog(toremove.Count.ToString() + " deleted");
+            updateStats = name.Count.ToString() + " added\n";
+            updateStats += toremove.Count.ToString() + " deleted";
+            addToLog(updateStats);
             pb1.Visible = false;
         }
 
@@ -1035,7 +1037,7 @@ namespace DesktopSwitcher
         private void updateLibraryToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             parsepics(false);
-            trayicon.ShowBalloonTip(10000, "", "Update Complete", ToolTipIcon.Info);
+            trayicon.ShowBalloonTip(10000, "", "Update Complete\n"+updateStats, ToolTipIcon.Info);
         }
     }
 }
