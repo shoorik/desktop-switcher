@@ -41,6 +41,7 @@ namespace DesktopSwitcher
         ArrayList log = new ArrayList();
         bool useParse = false;
         string updateStats = "";
+        bool userClose = false;
         //directory dir;
         //picture lastpic;
 
@@ -890,6 +891,7 @@ namespace DesktopSwitcher
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            userClose = true;
             this.Close();
         }
 
@@ -900,6 +902,7 @@ namespace DesktopSwitcher
 
         private void exit_Click(object sender, EventArgs e)
         {
+            userClose = true;
             this.Close();
         }
 
@@ -1038,6 +1041,15 @@ namespace DesktopSwitcher
         {
             parsepics(false);
             trayicon.ShowBalloonTip(10000, "", "Update Complete\n"+updateStats, ToolTipIcon.Info);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!userClose)
+            {
+                e.Cancel = true;
+                this.WindowState = FormWindowState.Minimized;
+            }
         }
     }
 }

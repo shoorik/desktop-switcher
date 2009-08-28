@@ -141,13 +141,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -166,7 +166,7 @@
             this.rescanDirectoryToolStripMenuItem,
             this.parseToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // dualmon
@@ -253,14 +253,14 @@
             // updateLibraryToolStripMenuItem
             // 
             this.updateLibraryToolStripMenuItem.Name = "updateLibraryToolStripMenuItem";
-            this.updateLibraryToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.updateLibraryToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.updateLibraryToolStripMenuItem.Text = "Update Library";
             this.updateLibraryToolStripMenuItem.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem_Click);
             // 
             // alwaysparse
             // 
             this.alwaysparse.Name = "alwaysparse";
-            this.alwaysparse.Size = new System.Drawing.Size(169, 22);
+            this.alwaysparse.Size = new System.Drawing.Size(163, 22);
             this.alwaysparse.Text = "Always use Parse";
             this.alwaysparse.Click += new System.EventHandler(this.alwaysparse_Click);
             // 
@@ -268,33 +268,33 @@
             // 
             this.autoparse.CheckOnClick = true;
             this.autoparse.Name = "autoparse";
-            this.autoparse.Size = new System.Drawing.Size(169, 22);
+            this.autoparse.Size = new System.Drawing.Size(163, 22);
             this.autoparse.Text = "Update at Start";
             // 
             // parseDirectoryToolStripMenuItem1
             // 
             this.parseDirectoryToolStripMenuItem1.Name = "parseDirectoryToolStripMenuItem1";
-            this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
+            this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
             this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
             this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
             // 
             // screenslist
             // 
             this.screenslist.Name = "screenslist";
-            this.screenslist.Size = new System.Drawing.Size(57, 20);
+            this.screenslist.Size = new System.Drawing.Size(59, 20);
             this.screenslist.Text = "Screens";
             // 
             // customizeToolStripMenuItem
             // 
             this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
+            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
             this.customizeToolStripMenuItem.Text = "Customize";
             this.customizeToolStripMenuItem.Click += new System.EventHandler(this.customizeToolStripMenuItem_Click);
             // 
             // currentPicturesToolStripMenuItem
             // 
             this.currentPicturesToolStripMenuItem.Name = "currentPicturesToolStripMenuItem";
-            this.currentPicturesToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
+            this.currentPicturesToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
             this.currentPicturesToolStripMenuItem.Text = "Current Pictures";
             this.currentPicturesToolStripMenuItem.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem_Click);
             // 
@@ -369,41 +369,41 @@
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(198, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(187, 114);
             // 
             // traychange
             // 
             this.traychange.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.traychange.Name = "traychange";
-            this.traychange.Size = new System.Drawing.Size(197, 22);
+            this.traychange.Size = new System.Drawing.Size(186, 22);
             this.traychange.Text = "Change Background";
             this.traychange.Click += new System.EventHandler(this.traychange_Click);
             // 
             // currentPicturesToolStripMenuItem1
             // 
             this.currentPicturesToolStripMenuItem1.Name = "currentPicturesToolStripMenuItem1";
-            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(186, 22);
             this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
             this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
             // 
             // updateLibraryToolStripMenuItem1
             // 
             this.updateLibraryToolStripMenuItem1.Name = "updateLibraryToolStripMenuItem1";
-            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(186, 22);
             this.updateLibraryToolStripMenuItem1.Text = "Update Library";
             this.updateLibraryToolStripMenuItem1.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem1_Click);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // exit
             // 
             this.exit.Name = "exit";
-            this.exit.Size = new System.Drawing.Size(197, 22);
+            this.exit.Size = new System.Drawing.Size(186, 22);
             this.exit.Text = "Exit";
             this.exit.Click += new System.EventHandler(this.exit_Click);
             // 
@@ -536,6 +536,7 @@
             this.Controls.Add(this.dirtb);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Desktop Switcher";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -543,6 +544,7 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).EndInit();
