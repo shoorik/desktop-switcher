@@ -79,6 +79,7 @@
             this.textlog = new System.Windows.Forms.RichTextBox();
             this.logshow = new System.Windows.Forms.Button();
             this.pb1 = new System.Windows.Forms.ProgressBar();
+            this.fade7 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -147,7 +148,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -161,6 +162,7 @@
             this.subdirs,
             this.statenable,
             this.showtips,
+            this.fade7,
             this.toolStripSeparator1,
             this.diagnosticToolStripMenuItem,
             this.rescanDirectoryToolStripMenuItem,
@@ -510,6 +512,13 @@
             this.pb1.TabIndex = 19;
             this.pb1.Visible = false;
             // 
+            // fade7
+            // 
+            this.fade7.CheckOnClick = true;
+            this.fade7.Name = "fade7";
+            this.fade7.Size = new System.Drawing.Size(191, 22);
+            this.fade7.Text = "Windows 7 Fade";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -607,6 +616,7 @@
         private System.Windows.Forms.ToolStripMenuItem autoparse;
         private System.Windows.Forms.ToolStripMenuItem updateLibraryToolStripMenuItem1;
         private System.Windows.Forms.ProgressBar pb1;
+        private System.Windows.Forms.ToolStripMenuItem fade7;
     }
 }
 

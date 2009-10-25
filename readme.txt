@@ -35,6 +35,7 @@ won't work correctly if there are two rows of monitors
 
 
 changelog:
+10/25/09:	put in option to use windows 7 fading when changing wallpaper
 07/28/09:	fixed picture ratio detection
 			added log
 			added optional parsing system that saves data to a text file
