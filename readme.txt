@@ -32,9 +32,12 @@ if you only have one monitor, leave dual monitor unchecked
 will automatically account for dual monitor wallpapers
 if your desktop size changes or relative positions of monitors is changed, run diagnostic.
 won't work correctly if there are two rows of monitors
+for the windows 7 fade effect, check the windows 7 fade option, though I don't think it will work if you have UAC enabled
 
 
 changelog:
+10/27/09:	changed registry location so can use with UAC (fading doesn't work with UAC for some reason)
+			corrected unchecked exceptions so there are no significant errors when starting for the first time
 10/25/09:	put in option to use windows 7 fading when changing wallpaper
 07/28/09:	fixed picture ratio detection
 			added log

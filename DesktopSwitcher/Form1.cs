@@ -266,8 +266,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             denombox.SelectedIndex = 1;
             try
             {
-                RegistryKey ourkey = Registry.Users;
-                ourkey = ourkey.OpenSubKey(@".DEFAULT\Software\Schraitle\Desktop");
+                RegistryKey ourkey = Registry.CurrentUser;
+                ourkey = ourkey.OpenSubKey(@"Software\Schraitle\Desktop");
                 dirtb.Text = (string)ourkey.GetValue("dir");
                 timernum.Value = decimal.Parse((string)ourkey.GetValue("interval"));
                 startmintool.Checked = bool.Parse((string)ourkey.GetValue("startmin"));
@@ -287,7 +287,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                     winstart.Checked = true;
                 startup.Close();
             }
-            catch (Exception x) { x.ToString(); MessageBox.Show("Error with the registry, either this is the first time you've run this program, or the program can't access your registry(UAC)"); }
+            catch (Exception x) { MessageBox.Show("Error with the registry, either this is the first time you've run this program, or the program can't access your registry(UAC)\n\n" + x.ToString()); }
             log.Capacity = 50;
             if (startmintool.Checked)
                 this.WindowState = FormWindowState.Minimized;
@@ -359,9 +359,9 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         {
             try
             {
-                RegistryKey ourkey = Registry.Users;
-                ourkey = ourkey.CreateSubKey(@".DEFAULT\Software\Schraitle\Desktop");
-                ourkey.OpenSubKey(@".DEFAULT\Software\Schraitle\Desktop", true);
+                RegistryKey ourkey = Registry.CurrentUser;
+                ourkey = ourkey.CreateSubKey(@"Software\Schraitle\Desktop");
+                ourkey.OpenSubKey(@"Software\Schraitle\Desktop", true);
                 ourkey.SetValue("dir", dirtb.Text);
                 ourkey.SetValue("interval", timernum.Value);
                 ourkey.SetValue("startmin", startmintool.Checked);
@@ -649,16 +649,21 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         /// </summary>
         private void getdirpics()
         {
-            dirpics = new List<string>();
-            DirectoryInfo di = new DirectoryInfo(dirtb.Text);
-            FileInfo[] all;
-            if (subdirs.Checked)
-                all = di.GetFiles("*.*", SearchOption.AllDirectories);
+            if (dirtb.Text.Length > 0)
+            {
+                dirpics = new List<string>();
+                DirectoryInfo di = new DirectoryInfo(dirtb.Text);
+                FileInfo[] all;
+                if (subdirs.Checked)
+                    all = di.GetFiles("*.*", SearchOption.AllDirectories);
+                else
+                    all = di.GetFiles();
+                foreach (FileInfo f in all)
+                    if (exts.Contains(f.Extension.ToLower()) && f.Extension != "" && f.FullName != (dirtb.Text + "\\Background.bmp"))
+                        dirpics.Add(f.FullName);
+            }
             else
-                all = di.GetFiles();
-            foreach (FileInfo f in all)
-                if (exts.Contains(f.Extension.ToLower()) && f.Extension != "" && f.FullName != (dirtb.Text + "\\Background.bmp"))
-                    dirpics.Add(f.FullName);
+                MessageBox.Show("There is no directory selected, please select one");
         }
 
         /// <summary>
