@@ -24,6 +24,8 @@ click always use parse to parse directory and then always use the saved parse te
 parsing goes through the directory specified and records the filename and height and width of all pictures so that it is quickly accessible in the future. It takes a long time to parse, but afterwards, it takes less time to choose pictures. Once parsing is enabled, you can update the library when pictures are added or deleted, this will take less time than reparsing the entire directory.
 check update at start to have the program update the library every time it starts up.
 
+Program Filter:
+put the name of the process in the text box, separated by spaces, and the timer won't change wallpapers if any of those programs are running.
 
 Other things:
 to start the timer when the program starts, check start automatically
@@ -36,6 +38,7 @@ for the windows 7 fade effect, check the windows 7 fade option, though I don't t
 
 
 changelog:
+11/07/09:	added program filter
 10/27/09:	changed registry location so can use with UAC (fading doesn't work with UAC for some reason)
 			corrected unchecked exceptions so there are no significant errors when starting for the first time
 10/25/09:	put in option to use windows 7 fading when changing wallpaper

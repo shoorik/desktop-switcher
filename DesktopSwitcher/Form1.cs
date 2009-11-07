@@ -11,6 +11,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace DesktopSwitcher
 {
@@ -224,6 +225,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         ]
         class ActiveDesktop /* : IActiveDesktop */ { }
         #endregion
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern Int32 SystemParametersInfo(UInt32 uiAction, UInt32 uiParam, String pvParam, UInt32 fWinIni);
 
@@ -250,6 +252,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         bool useParse = false;
         string updateStats = "";
         bool userClose = false;
+        public string progfilter = "";
+        InputForm inputfrm;
         //directory dir;
         //picture lastpic;
 
@@ -281,6 +285,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 alwaysparse.Checked = bool.Parse((string)ourkey.GetValue("parse"));
                 autoparse.Checked = bool.Parse((string)ourkey.GetValue("autoparse"));
                 fade7.Checked = bool.Parse((string)ourkey.GetValue("fade7"));
+                progfilter += (string)ourkey.GetValue("progfilter");
                 ourkey.Close();
                 RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 if (startup.GetValue("SchDesktopSwitcher") != null)
@@ -289,6 +294,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             }
             catch (Exception x) { MessageBox.Show("Error with the registry, either this is the first time you've run this program, or the program can't access your registry(UAC)\n\n" + x.ToString()); }
             log.Capacity = 50;
+            if (progfilter == null)
+                progfilter = "";
             if (startmintool.Checked)
                 this.WindowState = FormWindowState.Minimized;
             if (useParse = alwaysparse.Checked)
@@ -305,6 +312,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 start_timer();
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new System.EventHandler(displaySettingsChanged);
             stat = new stats(dirtb.Text);
+            inputfrm = new InputForm(this);
             //dir = new directory(dirtb.Text);
             //lastpic = dir.getpic(0);
         }
@@ -375,6 +383,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 ourkey.SetValue("parse", alwaysparse.Checked);
                 ourkey.SetValue("autoparse", autoparse.Checked);
                 ourkey.SetValue("fade7", fade7.Checked);
+                ourkey.SetValue("progfilter", progfilter);
                 ourkey.Close();
             }
             catch (Exception x) { x.ToString(); }
@@ -1050,7 +1059,23 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         void timer_Tick(object sender, EventArgs e)
         {
-            changepaper("");
+            string[] progs = progfilter.Split(' ');
+            bool allowgo = true;
+            string beingused = "";
+            foreach (string prog in progs)
+            {
+                Process[] pname = Process.GetProcessesByName(prog);
+                if (pname.Length > 0)
+                {
+                    allowgo = false;
+                    beingused = prog;
+                    break;
+                }
+            }
+            if(allowgo)
+                changepaper("");
+            else
+                addToLog("didn't change because " + beingused + " is running");
         }
 
         private void dirbutton_Click(object sender, EventArgs e)
@@ -1274,6 +1299,11 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 e.Cancel = true;
                 this.WindowState = FormWindowState.Minimized;
             }
+        }
+
+        private void programFilterTS_Click(object sender, EventArgs e)
+        {
+            inputfrm.progFilter();
         }
     }
 }

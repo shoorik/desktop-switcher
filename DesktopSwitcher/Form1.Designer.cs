@@ -45,6 +45,7 @@
             this.subdirs = new System.Windows.Forms.ToolStripMenuItem();
             this.statenable = new System.Windows.Forms.ToolStripMenuItem();
             this.showtips = new System.Windows.Forms.ToolStripMenuItem();
+            this.fade7 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rescanDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +54,7 @@
             this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
             this.autoparse = new System.Windows.Forms.ToolStripMenuItem();
             this.parseDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.programFilterTS = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,7 +81,6 @@
             this.textlog = new System.Windows.Forms.RichTextBox();
             this.logshow = new System.Windows.Forms.Button();
             this.pb1 = new System.Windows.Forms.ProgressBar();
-            this.fade7 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -163,6 +164,7 @@
             this.statenable,
             this.showtips,
             this.fade7,
+            this.programFilterTS,
             this.toolStripSeparator1,
             this.diagnosticToolStripMenuItem,
             this.rescanDirectoryToolStripMenuItem,
@@ -223,6 +225,15 @@
             this.showtips.Size = new System.Drawing.Size(191, 22);
             this.showtips.Text = "Show Balloon Tips";
             // 
+            // fade7
+            // 
+            this.fade7.Checked = true;
+            this.fade7.CheckOnClick = true;
+            this.fade7.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fade7.Name = "fade7";
+            this.fade7.Size = new System.Drawing.Size(191, 22);
+            this.fade7.Text = "Windows 7 Fade";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -279,6 +290,13 @@
             this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
             this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
             this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
+            // 
+            // programFilterTS
+            // 
+            this.programFilterTS.Name = "programFilterTS";
+            this.programFilterTS.Size = new System.Drawing.Size(191, 22);
+            this.programFilterTS.Text = "Program Filter";
+            this.programFilterTS.Click += new System.EventHandler(this.programFilterTS_Click);
             // 
             // screenslist
             // 
@@ -512,13 +530,6 @@
             this.pb1.TabIndex = 19;
             this.pb1.Visible = false;
             // 
-            // fade7
-            // 
-            this.fade7.CheckOnClick = true;
-            this.fade7.Name = "fade7";
-            this.fade7.Size = new System.Drawing.Size(191, 22);
-            this.fade7.Text = "Windows 7 Fade";
-            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -617,6 +628,7 @@
         private System.Windows.Forms.ToolStripMenuItem updateLibraryToolStripMenuItem1;
         private System.Windows.Forms.ProgressBar pb1;
         private System.Windows.Forms.ToolStripMenuItem fade7;
+        private System.Windows.Forms.ToolStripMenuItem programFilterTS;
     }
 }
 

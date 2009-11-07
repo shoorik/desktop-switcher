@@ -6,3 +6,4 @@ F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\Desk
 F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.csproj.GenerateResource.Cache
 F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.exe
 F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.pdb
+F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.InputForm.resources
