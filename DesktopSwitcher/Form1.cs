@@ -726,7 +726,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             foreach (picture p in toremove)
                 pictures.Remove(p);
             //add all remaining names to pictures
-            Bitmap b;
+            Bitmap b = new Bitmap(1,1);
             pb1.Visible = true;
             pb1.Maximum = name.Count;
             pb1.Value = 0;
@@ -734,10 +734,10 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             {
                 b = new Bitmap(s);
                 pictures.Add(new picture(s,b.Height, b.Width, ""));
-                b.Dispose();
                 pb1.Value++;
                 Application.DoEvents();
             }
+            b.Dispose();
             TextWriter w = new StreamWriter(dirtb.Text + "\\parse.txt",false);
             foreach (picture p in pictures)
             {

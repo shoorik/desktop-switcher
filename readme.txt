@@ -38,6 +38,7 @@ for the windows 7 fade effect, check the windows 7 fade option, though I don't t
 
 
 changelog:
+11/14/09:	fixed memory leak in autoparse that prevented computer from shutting down
 11/07/09:	added program filter
 10/27/09:	changed registry location so can use with UAC (fading doesn't work with UAC for some reason)
 			corrected unchecked exceptions so there are no significant errors when starting for the first time
