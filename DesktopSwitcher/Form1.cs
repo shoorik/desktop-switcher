@@ -1021,6 +1021,11 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             if(fade7.Checked)
             {
                 IActiveDesktop ad = (IActiveDesktop)new ActiveDesktop();
+                WALLPAPEROPT opts = new WALLPAPEROPT();
+                opts.dwSize = System.Runtime.InteropServices.Marshal.SizeOf(opts);
+                ad.GetWallpaperOptions(ref opts, 0);
+                opts.dwStyle = WPSTYLE.TILE;
+                ad.SetWallpaperOptions(ref opts, 0);
                 ad.SetWallpaper(path, 0);
                 ad.ApplyChanges(AD_APPLY.ALL);
             }
