@@ -7,3 +7,12 @@ F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\Desk
 F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.csproj.GenerateResource.Cache
 F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.exe
 F:\Backup\My_Documents\Projects\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.pdb
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.exe
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.pdb
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\bin\Release\DesktopSwitcher.exe
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\bin\Release\DesktopSwitcher.pdb
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\ResolveAssemblyReference.cache
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.Form1.resources
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.InputForm.resources
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.Properties.Resources.resources
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.csproj.GenerateResource.Cache

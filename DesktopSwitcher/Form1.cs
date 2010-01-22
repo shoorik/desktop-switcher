@@ -1058,6 +1058,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             {
                 trayicon.Visible = true;
                 this.ShowInTaskbar = false;
+                this.Hide();
             }
         }
 
