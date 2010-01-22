@@ -1058,7 +1058,6 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             {
                 trayicon.Visible = true;
                 this.ShowInTaskbar = false;
-                this.Hide();
             }
         }
 
@@ -1299,7 +1298,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!userClose)
+            if (!userClose && e.CloseReason != CloseReason.WindowsShutDown)
             {
                 e.Cancel = true;
                 this.WindowState = FormWindowState.Minimized;
