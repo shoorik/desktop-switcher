@@ -435,6 +435,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 diag.pictureBox1.Size = diag.pictureBox1.Image.Size;
                 diag.Height = diag.label1.Height + 60 + diag.pictureBox1.Height;
                 diag.Width = diag.pictureBox1.Width + 20;
+                if (diag.Width < 250)
+                    diag.Width = 250;               
                 diag.Show();
                 //MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
             }
