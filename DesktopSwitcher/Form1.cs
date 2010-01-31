@@ -235,10 +235,12 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         public const string exts = ".jpg.jpeg.bmp.png";
         string[] denoms = new string[] { "Seconds", "Minutes", "Hours", "Days" };   //for interval settings
-        int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //                                                        //
+        int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //
         Screen[] desktops = Screen.AllScreens; //array of all screens on system
         int totalwidth; //total width of all screens
         int allheight = 0;
+        int highest = 0;    //highest coordinate of all the screens
+        int lowest = 0; //lowest coordinate of all the screens
         int usedwidth = 0;
         string pics = "";
         bool usedpic = true;
@@ -254,6 +256,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         bool userClose = false;
         public string progfilter = "";
         InputForm inputfrm;
+      //  Bitmap overflow;    //used for the second half of pictures when they go over their screen
+        //bool redo = false;
         //directory dir;
         //picture lastpic;
 
@@ -329,17 +333,43 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         /// </summary>
         private void getscreens()
         {
+            desktops = Screen.AllScreens;
             farthestleft = 0;
             totalwidth = 0;
             allheight = 0;
+            highest = 0;
+            lowest = 0;
             ToolStripMenuItem[] t = new ToolStripMenuItem[desktops.Length];
             for (int i = 0; i < desktops.Length; i++)
             {
-                totalwidth += desktops[i].Bounds.Width;
-                if (desktops[i].Bounds.Height + desktops[i].WorkingArea.Y > allheight)
-                    allheight = desktops[i].Bounds.Height + desktops[i].WorkingArea.Y;
                 if (desktops[i].WorkingArea.X < farthestleft)
                     farthestleft = desktops[i].WorkingArea.X;
+                totalwidth += desktops[i].Bounds.Width;
+                if (desktops[i].WorkingArea.Bottom > lowest)
+                    lowest = desktops[i].WorkingArea.Bottom;
+                if (desktops[i].WorkingArea.Top < highest)
+                    highest = desktops[i].WorkingArea.Top;
+            }
+            //finds order of screens from left to right by finding lowest, adding it to desktops array and then discarding it to search for the rest
+            int prevlow = farthestleft - 1;
+            for (int i = 0; i < Screen.AllScreens.Length; i++)
+            {
+                int low = totalwidth;//x value of farthest left screen
+                int y = 0;  //y value of farthest left screen
+                for (int j = 0; j < Screen.AllScreens.Length; j++) //goes through all screens to find the lowest, ignoring any that have already been added
+                {
+                    int temp = Screen.AllScreens[j].WorkingArea.X;
+                    if (temp < low && temp > prevlow)
+                    {
+                        low = temp;
+                        y = Screen.AllScreens[j].WorkingArea.Y;
+                    }
+                }
+                desktops[i] = Screen.FromPoint(new Point(low, y));
+                prevlow = low;
+            }
+            for (int i = 0; i < desktops.Length; i++)
+            {
                 t[i] = new ToolStripMenuItem();
                 ToolStripMenuItem[] props = new ToolStripMenuItem[3];
                 for (int j = 0; j < props.Length; j++)
@@ -352,12 +382,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 props[2].Text = "Ratio:  " + getratio(i).ToString();
                 t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
             }
-            int wide = farthestleft;
-            for (int i = 0; i < desktops.Length; i++)
-            {
-                desktops[i] = Screen.FromPoint(new Point(wide, 500));
-                wide += desktops[i].Bounds.Width;
-            }
+            allheight = lowest - highest;
 
             screenslist.DropDownItems.Clear();
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
@@ -401,11 +426,50 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             if (popup)
             {
                 string done = " Screen(s)\n\nOrder:\n";
-                for (int i = 0; i < desktops.Length; i++)
-                    done += " | " + desktops[i].DeviceName.Substring(11, 1).ToString(); ;
-                done += " |";
-                MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
+                //for (int i = 0; i < desktops.Length; i++)
+                //    done += " | " + (i+1).ToString(); ;
+                //done += " |";
+                diagnosticForm diag = new diagnosticForm();
+                diag.label1.Text = ("Done!\n\n" + desktops.Length.ToString() + done);
+                diag.pictureBox1.Image = showVisual();
+                diag.pictureBox1.Size = diag.pictureBox1.Image.Size;
+                diag.Height = diag.label1.Height + 60 + diag.pictureBox1.Height;
+                diag.Width = diag.pictureBox1.Width + 20;
+                diag.Show();
+                //MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
             }
+            showVisual();
+        }
+
+        /// <summary>
+        /// creates an image representing the screens and their size and position in relation to each other
+        /// </summary>
+        /// <returns>image showing where the screens are</returns>
+        private Image showVisual()
+        {
+            float scale = 15;
+            float offset = 5;
+            float farleft = (float)farthestleft/scale*-1;
+            float high = (float)highest/scale*-1;
+            Bitmap world = new Bitmap((int)(((float)totalwidth / scale)+2*offset), (int)(((float)allheight / scale)+2*offset));
+            Graphics g = Graphics.FromImage(world);
+            Pen pen = new Pen(Color.White, 4);
+            Brush pen2 = Brushes.Black;
+            g.FillRectangle(pen2, 0, 0, (float)world.Width, (float)world.Height);
+            Font font = new Font(FontFamily.GenericSansSerif, 15);
+            for (int i = 0; i < desktops.Length; i++)
+            {
+                float width = (float)desktops[i].Bounds.Width / scale;
+                float height = (float)desktops[i].Bounds.Height / scale;
+                float x = farleft + ((float)desktops[i].WorkingArea.X / scale);
+                float y = high +((float)desktops[i].WorkingArea.Y / scale);
+                g.DrawString((i+1).ToString(), font, Brushes.White, new PointF(x + width/2, y + height/2));
+                g.DrawRectangle(pen, offset + x, offset + y, width, height);
+            }
+            g.Save();
+            g.Dispose();
+            return world;
+            //world.Save("world.bmp");
         }
 
         #region ratiostuff
@@ -582,8 +646,9 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                         touse = getrandompic(getwidth(totalwidth - usedwidth), i);
                     else
                         touse = file;
-
                 Bitmap b2 = new Bitmap(touse);
+                //if (redo)
+                //    b2 = overflow;
                 i += makepicture(ref final, ref b2, i);
                 if (usedpic)
                 {
@@ -599,20 +664,43 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             }
             usedwidth = 0;
 
-            Bitmap newfinal = new Bitmap(final.Width, final.Height);         
-            if(farthestleft < 0)
+            //this section chops up image top and bottom and left and right for when primary screen isn't in a normal place
+            Bitmap newfinal = new Bitmap(final.Width, final.Height);
+            if (farthestleft < 0 || highest < 0)
             {
-                Bitmap right = final.Clone(new Rectangle((farthestleft * -1),0,final.Width-(farthestleft * -1),final.Height),final.PixelFormat);
-                Bitmap left = final.Clone(new Rectangle(0,0,(farthestleft * -1),final.Height),final.PixelFormat);
-                
-                Graphics h;
-                h = Graphics.FromImage(newfinal);
-                h.DrawImage(right, 0, 0, right.Width, right.Height);
-                h.DrawImage(left, right.Width,0,left.Width,left.Height);
-                h.Save();
-                h.Dispose();
-                right.Dispose();
-                left.Dispose();
+                if (highest < 0)
+                {
+                    Bitmap bottom = final.Clone(new Rectangle(0, (highest * -1), final.Width, final.Height - (highest * -1)), final.PixelFormat);
+                    Bitmap top = final.Clone(new Rectangle(0, 0, final.Width, (highest * -1)), final.PixelFormat);
+
+                    Graphics h;
+                    h = Graphics.FromImage(newfinal);
+                    h.DrawImage(bottom, 0, 0, bottom.Width, bottom.Height);
+                    h.DrawImage(top, 0, bottom.Height, top.Width, top.Height);
+                    h.Save();
+                    h.Dispose();
+                    bottom.Dispose();
+                    top.Dispose();
+                }
+                if (farthestleft < 0)
+                {
+                    Bitmap cutUp = final;
+                    if (highest < 0)
+                        cutUp = newfinal;
+                    Bitmap right = cutUp.Clone(new Rectangle((farthestleft * -1), 0, cutUp.Width - (farthestleft * -1), cutUp.Height), cutUp.PixelFormat);
+                    Bitmap left = cutUp.Clone(new Rectangle(0, 0, (farthestleft * -1), cutUp.Height), cutUp.PixelFormat);
+
+                    newfinal = new Bitmap(newfinal.Width, newfinal.Height);
+                    Graphics h;
+                    h = Graphics.FromImage(newfinal);
+                    h.DrawImage(right, 0, 0, right.Width, right.Height);
+                    h.DrawImage(left, right.Width, 0, left.Width, left.Height);
+                    h.Save();
+                    h.Dispose();
+                    right.Dispose();
+                    left.Dispose();
+                    cutUp.Dispose();
+                }
                 newfinal.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
             }
             else
@@ -632,7 +720,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         /// <summary>
         /// scales down bitmap to specified dimensions
-        /// http://www.personalmicrocosms.com/Pages/dotnettips.aspx?c=24&t=50#tip
+        /// http://www.personalmicrocosms.com/Pages/dotnettips.aspx?c=24&t=50#tip;
         /// </summary>
         /// <param name="Bitmap">bitmap to scale</param>
         /// <param name="ScaleFactorX">x scale</param>
@@ -834,7 +922,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                         workingwidth = widthofscreens(screen, i);
                     }
                     if (!sameratio(b, workingwidth, workingheight, (double)usebox.Value))
-                        if (b.getwidth() >= workingwidth)
+                        if (b.getwidth() > workingwidth)
                         { }
                         else
                         {
@@ -930,8 +1018,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
             if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen, (double)ratiobox.Value) && desktops.Length > 1)
             {
-            int i = screen;
-            while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
+                int i = screen;
+                while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
                 {
                     i++;
                     j++;
@@ -958,49 +1046,36 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             int realheight = picin.Height;
             int realwidth = picin.Width;
             int xpad = 0;
-            int ypad = 0;
-            Bitmap temp = new Bitmap(workingwidth, workingheight);
+            int ypad = desktops[screen].WorkingArea.Y + (highest * -1);
+            Bitmap temp = new Bitmap(workingwidth, allheight);
+            //temp becomes image with dimensions of allheight x monitor width
             if (action == 0) //scaled (scaled up or down to fit in the closest screen bound)
             {
                 if ((double)picin.Width / (double)workingwidth < (double)picin.Height / (double)workingheight)
                 {
                     realheight = workingheight;
                     realwidth = (int)((double)picin.Width / ((double)picin.Height / (double)workingheight));
-                    ypad = 0;
+                    ypad += 0;
                     xpad = (workingwidth - realwidth) / 2;
                 }
                 else
                 {
                     realheight = (int)((double)picin.Height / ((double)picin.Width / (double)workingwidth));
                     realwidth = workingwidth;
-                    ypad = (workingheight - realheight) / 2;
+                    ypad += (workingheight - realheight) / 2;
                     xpad = 0;
                 }
-                Graphics g;
-                g = Graphics.FromImage(temp);
-                Bitmap todraw = new Bitmap(1,1);
-                scale(ref picin, ref todraw, realwidth,realheight);
-                g.DrawImage(todraw, xpad, ypad, realwidth, realheight);
-                todraw.Dispose();
-                g.Save();
-                g.Dispose();
+                drawPic(ref temp, ref picin, xpad, ypad, realwidth, realheight);
             }
 
             else if (action == 1)    //stretched (stretched slightly to fill the entire screen) 
             {                       //tiled (no change in size, picture just added in)
-                Graphics g;
-                g = Graphics.FromImage(temp);
-                Bitmap todraw = new Bitmap(1,1);
-                scale(ref picin,ref todraw, workingwidth,workingheight);
-                g.DrawImage(todraw, 0, 0, workingwidth, workingheight);
-                todraw.Dispose();
-                g.Save();
-                g.Dispose();
+                drawPic(ref temp, ref picin, 0, ypad, workingwidth, workingheight);
             }
 
             Graphics h;
             h = Graphics.FromImage(b);
-            h.DrawImage(temp, usedwidth, desktops[screen].WorkingArea.Y, workingwidth, workingheight);
+            h.DrawImage(temp, usedwidth, 0, temp.Width, temp.Height);
             //h.DrawImage(temp, usedwidth, heightfromtop[screen], workingwidth, workingheight);
             h.Save();
             h.Dispose();
@@ -1008,6 +1083,27 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             temp.Dispose();
             usedwidth += workingwidth;
             return j;
+        }
+
+        /// <summary>
+        /// draws new picture onto original picture
+        /// </summary>
+        /// <param name="drawOn">picture that is being added to</param>
+        /// <param name="image">picture that will be put on drawOn</param>
+        /// <param name="xpad">x coordinate to start drawing</param>
+        /// <param name="ypad">y coordinate to start drawing</param>
+        /// <param name="width">width of picture to draw</param>
+        /// <param name="height">height of picture to draw</param>
+        private void drawPic(ref Bitmap drawOn, ref Bitmap image, int xpad, int ypad, int width, int height)
+        {
+            Graphics g;
+            g = Graphics.FromImage(drawOn);
+            Bitmap todraw = new Bitmap(1, 1);
+            scale(ref image, ref todraw, width, height);
+            g.DrawImage(todraw, xpad, ypad, width, height);
+            todraw.Dispose();
+            g.Save();
+            g.Dispose();
         }
 
         /// <summary>
@@ -1309,6 +1405,11 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         private void programFilterTS_Click(object sender, EventArgs e)
         {
             inputfrm.progFilter();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Schraitle's Desktop Switcher\n" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n\nrubikscubist@gmail.com");
         }
     }
 }

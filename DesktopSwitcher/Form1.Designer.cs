@@ -46,6 +46,7 @@
             this.statenable = new System.Windows.Forms.ToolStripMenuItem();
             this.showtips = new System.Windows.Forms.ToolStripMenuItem();
             this.fade7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.programFilterTS = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rescanDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +55,6 @@
             this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
             this.autoparse = new System.Windows.Forms.ToolStripMenuItem();
             this.parseDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.programFilterTS = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +81,8 @@
             this.textlog = new System.Windows.Forms.RichTextBox();
             this.logshow = new System.Windows.Forms.Button();
             this.pb1 = new System.Windows.Forms.ProgressBar();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -141,7 +143,9 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem});
+            this.exitToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.aboutToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -149,7 +153,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -234,6 +238,13 @@
             this.fade7.Size = new System.Drawing.Size(191, 22);
             this.fade7.Text = "Windows 7 Fade";
             // 
+            // programFilterTS
+            // 
+            this.programFilterTS.Name = "programFilterTS";
+            this.programFilterTS.Size = new System.Drawing.Size(191, 22);
+            this.programFilterTS.Text = "Program Filter";
+            this.programFilterTS.Click += new System.EventHandler(this.programFilterTS_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -290,13 +301,6 @@
             this.parseDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
             this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
             this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
-            // 
-            // programFilterTS
-            // 
-            this.programFilterTS.Name = "programFilterTS";
-            this.programFilterTS.Size = new System.Drawing.Size(191, 22);
-            this.programFilterTS.Text = "Program Filter";
-            this.programFilterTS.Click += new System.EventHandler(this.programFilterTS_Click);
             // 
             // screenslist
             // 
@@ -530,6 +534,18 @@
             this.pb1.TabIndex = 19;
             this.pb1.Visible = false;
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -629,6 +645,8 @@
         private System.Windows.Forms.ProgressBar pb1;
         private System.Windows.Forms.ToolStripMenuItem fade7;
         private System.Windows.Forms.ToolStripMenuItem programFilterTS;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

@@ -38,6 +38,11 @@ for the windows 7 fade effect, check the windows 7 fade option, though I don't t
 
 
 changelog:
+01/30/10:	added about page to show current version number
+			fixed issue where picture selection would be wrong when using multiple monitors
+			wallpaper now position themselves correctly when monitors are offset from each other vertically(dual wallpapers may have issues still with lining up)
+			changed screen detection to show the correct screens
+			added new way of seeing which screens are which on the system
 01/22/10:	fixed bug which made desktopswitcher stop windows from shutting down
 01/12/10:	fixed not making wallpaper tile when picture style was manually changed in system properties
 11/14/09:	fixed memory leak in autoparse that prevented computer from shutting down
