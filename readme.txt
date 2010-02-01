@@ -38,14 +38,21 @@ for the windows 7 fade effect, check the windows 7 fade option, though I don't t
 
 
 changelog:
-01/30/10:	added about page to show current version number
+02/01/10:	---1.0.9.1---
+			turned off windows 7 fade by default
+			fixed issue with backgrounds larger than screen area would be used
+01/30/10:	---1.0.9---
+			added about page to show current version number
 			fixed issue where picture selection would be wrong when using multiple monitors
 			wallpaper now position themselves correctly when monitors are offset from each other vertically(dual wallpapers may have issues still with lining up)
 			changed screen detection to show the correct screens
 			added new way of seeing which screens are which on the system
-01/22/10:	fixed bug which made desktopswitcher stop windows from shutting down
-01/12/10:	fixed not making wallpaper tile when picture style was manually changed in system properties
-11/14/09:	fixed memory leak in autoparse that prevented computer from shutting down
+01/22/10:	---1.0.8.2---
+			fixed bug which made desktopswitcher stop windows from shutting down
+01/12/10:	---1.0.8.1---
+			fixed not making wallpaper tile when picture style was manually changed in system properties
+11/14/09:	---1.0.8---
+			fixed memory leak in autoparse that prevented computer from shutting down
 11/07/09:	added program filter
 10/27/09:	changed registry location so can use with UAC (fading doesn't work with UAC for some reason)
 			corrected unchecked exceptions so there are no significant errors when starting for the first time

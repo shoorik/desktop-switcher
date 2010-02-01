@@ -27,3 +27,4 @@ C:\Documents and Settings\User\My Documents\DesktopSwitcher\DesktopSwitcher\obj\
 C:\Documents and Settings\User\My Documents\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.csproj.GenerateResource.Cache
 C:\Documents and Settings\User\My Documents\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.exe
 C:\Documents and Settings\User\My Documents\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.pdb
+C:\Users\David\Documents\Programs\DesktopSwitcher\DesktopSwitcher\obj\Release\DesktopSwitcher.diagnosticForm.resources

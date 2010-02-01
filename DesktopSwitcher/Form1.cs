@@ -911,23 +911,28 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                     b = new picture((string)dirpics[c]);
                 }
                 System.Threading.Thread.Sleep(1);
-                int j = screen;
-                int workingwidth = desktops[screen].Bounds.Width;
+                int j = screen; //number of screens used in this process
+                int workingwidth = desktops[screen].Bounds.Width;   //width of the part of desktop that will be taken up by picture
                 int workingheight = desktops[screen].Bounds.Height;
+                //if the selected picture is larger than the screen and the ratio is not correct, and there is more than 1 screen
                 if (b.getwidth() > desktops[screen].Bounds.Width && !sameratio(b, screen, (double)usebox.Value) && desktops.Length > 1)
                 {
                     int i = screen;
+                    //extends workingwidth until picture is smaller than workingwidth, or ratio is the same, or run out of screens
+                    //also keeps track of screens used
                     while (i < desktops.Length - 1 && b.getwidth() > workingwidth && !sameratio(b, workingwidth, workingheight, (double)usebox.Value))
                     {
                         i++;
                         j++;
                         workingwidth = widthofscreens(screen, i);
                     }
+                    //if the ratio is not correct after above loop
                     if (!sameratio(b, workingwidth, workingheight, (double)usebox.Value))
-                        if (b.getwidth() > workingwidth)
-                        { }
-                        else
+                       // if (b.getwidth() > workingwidth)//i suggest getting rid of this if and just using the else block
+                       // { }
+                       // else
                         {
+                            //throw out last used screen and remove its properties from the saved variables
                             workingwidth -= desktops[i].Bounds.Width;
                             j--;
                         }
@@ -937,6 +942,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 }
                 else
                     j = 1;
+                //this if/else checks to see if picture is good enough for the properties of the screens determined to be used
                 if(j == 1)
                     if (b.getwidth() > maxwidth && !sameratio(b, maxwidth, workingheight, (double)usebox.Value) || !sameratio(b, desktops[screen].Bounds.Width, desktops[screen].Bounds.Height, (double)usebox.Value))
                         ok = false;
