@@ -256,6 +256,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         bool userClose = false;
         public string progfilter = "";
         InputForm inputfrm;
+        utilities Utilities;
       //  Bitmap overflow;    //used for the second half of pictures when they go over their screen
         //bool redo = false;
         //directory dir;
@@ -272,31 +273,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             timer.Tick += new EventHandler(timer_Tick);
             trayicon.Icon = this.Icon;
             denombox.SelectedIndex = 1;
-            try
-            {
-                RegistryKey ourkey = Registry.CurrentUser;
-                ourkey = ourkey.OpenSubKey(@"Software\Schraitle\Desktop");
-                dirtb.Text = (string)ourkey.GetValue("dir");
-                timernum.Value = decimal.Parse((string)ourkey.GetValue("interval"));
-                startmintool.Checked = bool.Parse((string)ourkey.GetValue("startmin"));
-                denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
-                dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
-                ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
-                usebox.Value = decimal.Parse((string)ourkey.GetValue("use"));
-                autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
-                subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
-                showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
-                alwaysparse.Checked = bool.Parse((string)ourkey.GetValue("parse"));
-                autoparse.Checked = bool.Parse((string)ourkey.GetValue("autoparse"));
-                fade7.Checked = bool.Parse((string)ourkey.GetValue("fade7"));
-                progfilter += (string)ourkey.GetValue("progfilter");
-                ourkey.Close();
-                RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                if (startup.GetValue("SchDesktopSwitcher") != null)
-                    winstart.Checked = true;
-                startup.Close();
-            }
-            catch (Exception x) { MessageBox.Show("Error with the registry, either this is the first time you've run this program, or the program can't access your registry(UAC)\n\n" + x.ToString()); }
+            Utilities = new utilities("DesktopSwitcher");
+            getSettings();
             log.Capacity = 50;
             if (progfilter == null)
                 progfilter = "";
@@ -343,12 +321,12 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             for (int i = 0; i < desktops.Length; i++)
             {
                 if (desktops[i].WorkingArea.X < farthestleft)
-                    farthestleft = desktops[i].WorkingArea.X;
+                    farthestleft = desktops[i].Bounds.X;
                 totalwidth += desktops[i].Bounds.Width;
                 if (desktops[i].WorkingArea.Bottom > lowest)
-                    lowest = desktops[i].WorkingArea.Bottom;
+                    lowest = desktops[i].Bounds.Bottom;
                 if (desktops[i].WorkingArea.Top < highest)
-                    highest = desktops[i].WorkingArea.Top;
+                    highest = desktops[i].Bounds.Top;
             }
             //finds order of screens from left to right by finding lowest, adding it to desktops array and then discarding it to search for the rest
             int prevlow = farthestleft - 1;
@@ -388,9 +366,95 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
         }
 
-        private void regsave()
+        void regGet()
         {
             try
+            {
+                RegistryKey ourkey = Registry.CurrentUser;
+                ourkey = ourkey.OpenSubKey(@"Software\Schraitle\Desktop");
+                dirtb.Text = (string)ourkey.GetValue("dir");
+                timernum.Value = decimal.Parse((string)ourkey.GetValue("interval"));
+                startmintool.Checked = bool.Parse((string)ourkey.GetValue("startmin"));
+                denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
+                dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
+                ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
+                usebox.Value = decimal.Parse((string)ourkey.GetValue("use"));
+                autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
+                subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
+                showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
+                alwaysparse.Checked = bool.Parse((string)ourkey.GetValue("parse"));
+                autoparse.Checked = bool.Parse((string)ourkey.GetValue("autoparse"));
+                fade7.Checked = bool.Parse((string)ourkey.GetValue("fade7"));
+                progfilter += (string)ourkey.GetValue("progfilter");
+                ourkey.Close();
+            }
+            catch (Exception x) { MessageBox.Show(x.ToString()); }
+        }
+
+        void getSettings()
+        {
+            Hashtable settings = Utilities.getSettings();
+            try
+            {
+                if (settings.Contains("dir"))
+                    dirtb.Text = (string)settings["dir"];
+                if (settings.Contains("interval"))
+                    timernum.Value = (decimal)settings["interval"];
+                if (settings.Contains("startmin"))
+                    startmintool.Checked = (bool)settings["startmin"];
+                if (settings.Contains("denomindex"))
+                    denombox.SelectedIndex = (int)settings["denomindex"];
+                if (settings.Contains("dualmon"))
+                    dualmon.Checked = (bool)settings["dualmon"];
+                if (settings.Contains("ratio"))
+                    ratiobox.Value = (decimal)settings["ratio"];
+                if (settings.Contains("use"))
+                    usebox.Value = (decimal)settings["use"];
+                if (settings.Contains("autostart"))
+                    autostart.Checked = (bool)settings["autostart"];
+                if (settings.Contains("subdirs"))
+                    subdirs.Checked = (bool)settings["subdirs"];
+                if (settings.Contains("balloon"))
+                    showtips.Checked = (bool)settings["balloon"];
+                if (settings.Contains("parse"))
+                    alwaysparse.Checked = (bool)settings["parse"];
+                if (settings.Contains("autoparse"))
+                    autoparse.Checked = (bool)settings["autoparse"];
+                if (settings.Contains("fade7"))
+                    fade7.Checked = (bool)settings["fade7"];
+                if (settings.Contains("progfilter"))
+                    progfilter += (string)settings["progfilter"];
+                if (settings.Contains("stats"))
+                    statenable.Checked = (bool)settings["stats"];
+                RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                if (startup.GetValue("SchDesktopSwitcher") != null)
+                    winstart.Checked = true;
+                startup.Close();
+            }
+            catch (Exception x) { MessageBox.Show("Error with the save data, either this is the first time you've run this program, or the program can't access your apptata(UAC)\n\n" + x.ToString()); }         
+        }
+
+        private void regsave()
+        {
+            Hashtable settings = new Hashtable();
+            settings["dir"] = dirtb.Text;
+            settings["interval"] = timernum.Value;
+            settings["startmin"] = startmintool.Checked;
+            settings["denomindex"] = denombox.SelectedIndex;
+            settings["dualmon"] = dualmon.Checked;
+            settings["ratio"] = ratiobox.Value;
+            settings["use"] = usebox.Value;
+            settings["autostart"] = autostart.Checked;
+            settings["subdirs"] = subdirs.Checked;
+            settings["balloon"] = showtips.Checked;
+            settings["parse"] = alwaysparse.Checked;
+            settings["autoparse"] = autoparse.Checked;
+            settings["fade7"] = fade7.Checked;
+            settings["progfilter"] = progfilter;
+            settings["stats"] = statenable.Checked;
+            Utilities.saveSettings(settings);
+
+            /*try
             {
                 RegistryKey ourkey = Registry.CurrentUser;
                 ourkey = ourkey.CreateSubKey(@"Software\Schraitle\Desktop");
@@ -411,7 +475,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 ourkey.SetValue("progfilter", progfilter);
                 ourkey.Close();
             }
-            catch (Exception x) { x.ToString(); }
+            catch (Exception x) { x.ToString(); }*/
         }
 
         /// <summary>
@@ -622,6 +686,13 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 file = getrandompic(getwidth(0), 0);
                 randompicking = true;
             }
+            if (!File.Exists(file))
+            {
+                final.Dispose();
+                randompicking = false;
+                addToLog("chosen picture doesn't exist, canceling operation (update library to weed out all missing files)");
+                return;
+            }
             //pictures.Add(file);
             pics = "Screen 1: " + file;
             if (randompicking && statenable.Checked)
@@ -648,6 +719,16 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                         touse = getrandompic(getwidth(totalwidth - usedwidth), i);
                     else
                         touse = file;
+                //if picture doesn't exist, get out of function, hopefully all things that should be set after function terminate are taken care of here
+                if (!File.Exists(touse))
+                {
+                    final.Dispose();
+                    b.Dispose();
+                    usedwidth = 0;
+                    randompicking = false;
+                    addToLog("chosen picture doesn't exist, canceling operation (update library to weed out all missing files)");
+                    return;
+                }
                 Bitmap b2 = new Bitmap(touse);
                 //if (redo)
                 //    b2 = overflow;
@@ -910,29 +991,24 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                     c = new Random().Next(dirpics.Count);
                     b = new picture((string)dirpics[c]);
                 }
-                System.Threading.Thread.Sleep(1);
-                int j = screen; //number of screens used in this process
-                int workingwidth = desktops[screen].Bounds.Width;   //width of the part of desktop that will be taken up by picture
+                System.Threading.Thread.Sleep(10);
+                int j = screen;
+                int workingwidth = desktops[screen].Bounds.Width;
                 int workingheight = desktops[screen].Bounds.Height;
-                //if the selected picture is larger than the screen and the ratio is not correct, and there is more than 1 screen
                 if (b.getwidth() > desktops[screen].Bounds.Width && !sameratio(b, screen, (double)usebox.Value) && desktops.Length > 1)
                 {
                     int i = screen;
-                    //extends workingwidth until picture is smaller than workingwidth, or ratio is the same, or run out of screens
-                    //also keeps track of screens used
                     while (i < desktops.Length - 1 && b.getwidth() > workingwidth && !sameratio(b, workingwidth, workingheight, (double)usebox.Value))
                     {
                         i++;
                         j++;
                         workingwidth = widthofscreens(screen, i);
                     }
-                    //if the ratio is not correct after above loop
                     if (!sameratio(b, workingwidth, workingheight, (double)usebox.Value))
-                       // if (b.getwidth() > workingwidth)//i suggest getting rid of this if and just using the else block
-                       // { }
-                       // else
+                        if (b.getwidth() > workingwidth)
+                        { }
+                        else
                         {
-                            //throw out last used screen and remove its properties from the saved variables
                             workingwidth -= desktops[i].Bounds.Width;
                             j--;
                         }
@@ -942,7 +1018,6 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 }
                 else
                     j = 1;
-                //this if/else checks to see if picture is good enough for the properties of the screens determined to be used
                 if(j == 1)
                     if (b.getwidth() > maxwidth && !sameratio(b, maxwidth, workingheight, (double)usebox.Value) || !sameratio(b, desktops[screen].Bounds.Width, desktops[screen].Bounds.Height, (double)usebox.Value))
                         ok = false;
@@ -1152,6 +1227,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         private void addToLog(string toadd)
         {
             textlog.AppendText(toadd + "\n");
+            textlog.SelectionStart = textlog.Text.Length;
             textlog.ScrollToCaret();
         }
 
@@ -1418,6 +1494,11 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Schraitle's Desktop Switcher\n" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n\nrubikscubist@gmail.com");
+        }
+
+        private void registryLoadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            regGet();
         }
     }
 }

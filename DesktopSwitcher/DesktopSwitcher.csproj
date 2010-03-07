@@ -104,6 +104,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="stats.cs" />
+    <Compile Include="utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon1.ico" />

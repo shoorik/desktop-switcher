@@ -26,6 +26,7 @@ check update at start to have the program update the library every time it start
 
 Program Filter:
 put the name of the process in the text box, separated by spaces, and the timer won't change wallpapers if any of those programs are running.
+ex. "hl2 GOM"
 
 Other things:
 to start the timer when the program starts, check start automatically
@@ -34,13 +35,15 @@ if you only have one monitor, leave dual monitor unchecked
 will automatically account for dual monitor wallpapers
 if your desktop size changes or relative positions of monitors is changed, run diagnostic.
 won't work correctly if there are two rows of monitors
-for the windows 7 fade effect, check the windows 7 fade option, though I don't think it will work if you have UAC enabled
+if you delete a picture and are using parsing, make sure to update the library, otherwise there could be an error later
+for the windows 7 fade effect, check the windows 7 fade option, though you have to manually change your wallpaper in windows once per computer boot for the fade effect to start working(for now)
 
 
 changelog:
-02/01/10:	---1.0.9.1---
-			turned off windows 7 fade by default
-			fixed issue with backgrounds larger than screen area would be used
+03/06/10:	---1.0.10---
+			fixed scrolling in log
+			fixed random number generator so there are less tries before finding a suitable picture
+			switched to using appdata instead of registry, a button in the options to load settings from registry has been added, this will load settings and when program is exited, they will be saved to appdata. this button will be removed in a future release
 01/30/10:	---1.0.9---
 			added about page to show current version number
 			fixed issue where picture selection would be wrong when using multiple monitors

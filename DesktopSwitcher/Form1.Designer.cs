@@ -51,7 +51,6 @@
             this.programFilterTS = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rescanDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +82,7 @@
             this.textlog = new System.Windows.Forms.RichTextBox();
             this.logshow = new System.Windows.Forms.Button();
             this.pb1 = new System.Windows.Forms.ProgressBar();
+            this.registryLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -131,8 +131,8 @@
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.screenslist,
-            this.currentPicturesToolStripMenuItem,
-            this.customizeToolStripMenuItem});
+            this.customizeToolStripMenuItem,
+            this.currentPicturesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -153,19 +153,19 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -180,11 +180,11 @@
             this.statenable,
             this.showtips,
             this.fade7,
-            this.programFilterTS,
             this.toolStripSeparator1,
+            this.programFilterTS,
             this.diagnosticToolStripMenuItem,
-            this.rescanDirectoryToolStripMenuItem,
-            this.parseToolStripMenuItem});
+            this.parseToolStripMenuItem,
+            this.registryLoadToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -243,7 +243,9 @@
             // 
             // fade7
             // 
+            this.fade7.Checked = true;
             this.fade7.CheckOnClick = true;
+            this.fade7.CheckState = System.Windows.Forms.CheckState.Checked;
             this.fade7.Name = "fade7";
             this.fade7.Size = new System.Drawing.Size(191, 22);
             this.fade7.Text = "Windows 7 Fade";
@@ -266,12 +268,6 @@
             this.diagnosticToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.diagnosticToolStripMenuItem.Text = "Screen Diagnostic";
             this.diagnosticToolStripMenuItem.Click += new System.EventHandler(this.diagnosticToolStripMenuItem_Click);
-            // 
-            // rescanDirectoryToolStripMenuItem
-            // 
-            this.rescanDirectoryToolStripMenuItem.Name = "rescanDirectoryToolStripMenuItem";
-            this.rescanDirectoryToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.rescanDirectoryToolStripMenuItem.Text = "Rescan Directory";
             // 
             // parseToolStripMenuItem
             // 
@@ -337,7 +333,7 @@
             this.changebutton.Location = new System.Drawing.Point(324, 62);
             this.changebutton.Name = "changebutton";
             this.changebutton.Size = new System.Drawing.Size(75, 41);
-            this.changebutton.TabIndex = 0;
+            this.changebutton.TabIndex = 9;
             this.changebutton.Text = "Change Background";
             this.changebutton.UseVisualStyleBackColor = true;
             this.changebutton.Click += new System.EventHandler(this.changebutton_Click);
@@ -347,7 +343,7 @@
             this.gobutton.Location = new System.Drawing.Point(5, 80);
             this.gobutton.Name = "gobutton";
             this.gobutton.Size = new System.Drawing.Size(75, 23);
-            this.gobutton.TabIndex = 1;
+            this.gobutton.TabIndex = 0;
             this.gobutton.Text = "Go";
             this.gobutton.UseVisualStyleBackColor = true;
             this.gobutton.Click += new System.EventHandler(this.gobutton_Click);
@@ -379,7 +375,7 @@
             this.choose.Location = new System.Drawing.Point(243, 62);
             this.choose.Name = "choose";
             this.choose.Size = new System.Drawing.Size(75, 41);
-            this.choose.TabIndex = 16;
+            this.choose.TabIndex = 12;
             this.choose.Text = "Choose Picture";
             this.choose.UseVisualStyleBackColor = true;
             this.choose.Click += new System.EventHandler(this.choose_Click);
@@ -480,7 +476,7 @@
             this.denombox.Location = new System.Drawing.Point(141, 57);
             this.denombox.Name = "denombox";
             this.denombox.Size = new System.Drawing.Size(80, 21);
-            this.denombox.TabIndex = 12;
+            this.denombox.TabIndex = 15;
             // 
             // usebox
             // 
@@ -492,7 +488,7 @@
             0});
             this.usebox.Name = "usebox";
             this.usebox.Size = new System.Drawing.Size(33, 20);
-            this.usebox.TabIndex = 14;
+            this.usebox.TabIndex = 13;
             this.usebox.Value = new decimal(new int[] {
             20,
             0,
@@ -543,6 +539,13 @@
             this.pb1.Size = new System.Drawing.Size(85, 15);
             this.pb1.TabIndex = 19;
             this.pb1.Visible = false;
+            // 
+            // registryLoadToolStripMenuItem
+            // 
+            this.registryLoadToolStripMenuItem.Name = "registryLoadToolStripMenuItem";
+            this.registryLoadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.registryLoadToolStripMenuItem.Text = "Registry Load(temp)";
+            this.registryLoadToolStripMenuItem.Click += new System.EventHandler(this.registryLoadToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -631,7 +634,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolStripMenuItem winstart;
         private System.Windows.Forms.Label loglabel;
-        private System.Windows.Forms.ToolStripMenuItem rescanDirectoryToolStripMenuItem;
         private System.Windows.Forms.RichTextBox textlog;
         private System.Windows.Forms.Button logshow;
         private System.Windows.Forms.ToolStripMenuItem parseToolStripMenuItem;
@@ -645,6 +647,7 @@
         private System.Windows.Forms.ToolStripMenuItem programFilterTS;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem registryLoadToolStripMenuItem;
     }
 }
 
