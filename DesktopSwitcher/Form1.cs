@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using Utilities;
 
 namespace DesktopSwitcher
 {
@@ -264,11 +265,16 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         public Form1()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception x) { MessageBox.Show(x.ToString()); }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            menuStrip1.Visible = true;
             dualmon.Checked = desktops.Length > 1;
             timer.Tick += new EventHandler(timer_Tick);
             trayicon.Icon = this.Icon;

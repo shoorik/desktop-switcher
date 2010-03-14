@@ -7,7 +7,9 @@ using System.Collections;
 using System.Xml.Serialization;
 using System.Windows.Forms;
 
-namespace DesktopSwitcher
+
+//last modified: 3/13/10 7:13PM
+namespace Utilities
 {
     public class utilities
     {
