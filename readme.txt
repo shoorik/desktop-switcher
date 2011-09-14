@@ -40,6 +40,13 @@ for the windows 7 fade effect, check the windows 7 fade option, though you have 
 
 
 changelog:
+09/13/11:	---1.1.0---
+			removed registry interaction, if for some reason you were using this before and missed the latest version, get version 1.0.10 and load your registry settings with the menu item
+			disabled main window while wallpaper change is in progress
+			changed show log button to properly resize window
+			fixed bug in which screens were not being detected properly
+			created installation file to ease the updating process
+			created an update check to see if there is a new version available
 03/06/10:	---1.0.10---
 			fixed scrolling in log
 			fixed random number generator so there are less tries before finding a suitable picture

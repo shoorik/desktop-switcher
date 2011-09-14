@@ -56,7 +56,6 @@
             this.alwaysparse = new System.Windows.Forms.ToolStripMenuItem();
             this.autoparse = new System.Windows.Forms.ToolStripMenuItem();
             this.parseDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.registryLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenslist = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPicturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +82,8 @@
             this.textlog = new System.Windows.Forms.RichTextBox();
             this.logshow = new System.Windows.Forms.Button();
             this.pb1 = new System.Windows.Forms.ProgressBar();
+            this.waitlbl = new System.Windows.Forms.Label();
+            this.update = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -152,19 +153,19 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -179,11 +180,11 @@
             this.statenable,
             this.showtips,
             this.fade7,
+            this.update,
             this.toolStripSeparator1,
             this.programFilterTS,
             this.diagnosticToolStripMenuItem,
-            this.parseToolStripMenuItem,
-            this.registryLoadToolStripMenuItem});
+            this.parseToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -307,13 +308,6 @@
             this.parseDirectoryToolStripMenuItem1.Text = "Parse Directory";
             this.parseDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.parseDirectoryToolStripMenuItem1_Click);
             // 
-            // registryLoadToolStripMenuItem
-            // 
-            this.registryLoadToolStripMenuItem.Name = "registryLoadToolStripMenuItem";
-            this.registryLoadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.registryLoadToolStripMenuItem.Text = "Registry Load(temp)";
-            this.registryLoadToolStripMenuItem.Click += new System.EventHandler(this.registryLoadToolStripMenuItem_Click);
-            // 
             // screenslist
             // 
             this.screenslist.Name = "screenslist";
@@ -405,42 +399,42 @@
             this.restoreToolStripMenuItem,
             this.exit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.ShowCheckMargin = true;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(209, 114);
+            this.contextMenuStrip1.ShowImageMargin = false;
+            this.contextMenuStrip1.Size = new System.Drawing.Size(162, 114);
             // 
             // traychange
             // 
             this.traychange.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.traychange.Name = "traychange";
-            this.traychange.Size = new System.Drawing.Size(208, 22);
+            this.traychange.Size = new System.Drawing.Size(161, 22);
             this.traychange.Text = "Change Background";
             this.traychange.Click += new System.EventHandler(this.traychange_Click);
             // 
             // currentPicturesToolStripMenuItem1
             // 
             this.currentPicturesToolStripMenuItem1.Name = "currentPicturesToolStripMenuItem1";
-            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(208, 22);
+            this.currentPicturesToolStripMenuItem1.Size = new System.Drawing.Size(161, 22);
             this.currentPicturesToolStripMenuItem1.Text = "Current Pictures";
             this.currentPicturesToolStripMenuItem1.Click += new System.EventHandler(this.currentPicturesToolStripMenuItem1_Click);
             // 
             // updateLibraryToolStripMenuItem1
             // 
             this.updateLibraryToolStripMenuItem1.Name = "updateLibraryToolStripMenuItem1";
-            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(208, 22);
+            this.updateLibraryToolStripMenuItem1.Size = new System.Drawing.Size(161, 22);
             this.updateLibraryToolStripMenuItem1.Text = "Update Library";
             this.updateLibraryToolStripMenuItem1.Click += new System.EventHandler(this.updateLibraryToolStripMenuItem1_Click);
             // 
             // restoreToolStripMenuItem
             // 
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // exit
             // 
             this.exit.Name = "exit";
-            this.exit.Size = new System.Drawing.Size(208, 22);
+            this.exit.Size = new System.Drawing.Size(161, 22);
             this.exit.Text = "Exit";
             this.exit.Click += new System.EventHandler(this.exit_Click);
             // 
@@ -547,12 +541,36 @@
             this.pb1.TabIndex = 19;
             this.pb1.Visible = false;
             // 
+            // waitlbl
+            // 
+            this.waitlbl.AutoSize = true;
+            this.waitlbl.BackColor = System.Drawing.Color.White;
+            this.waitlbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.waitlbl.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            this.waitlbl.Font = new System.Drawing.Font("OpenSymbol", 17F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+            this.waitlbl.Location = new System.Drawing.Point(2, 54);
+            this.waitlbl.Name = "waitlbl";
+            this.waitlbl.Size = new System.Drawing.Size(399, 25);
+            this.waitlbl.TabIndex = 20;
+            this.waitlbl.Text = "Please Wait While Background Changes...";
+            this.waitlbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.waitlbl.Visible = false;
+            // 
+            // update
+            // 
+            this.update.CheckOnClick = true;
+            this.update.Name = "update";
+            this.update.Size = new System.Drawing.Size(191, 22);
+            this.update.Text = "Check For Updates";
+            this.update.ToolTipText = "Check for updates on program launch";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(403, 136);
+            this.Controls.Add(this.waitlbl);
             this.Controls.Add(this.pb1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.logshow);
@@ -576,12 +594,13 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Desktop Switcher";
+            this.TransparencyKey = System.Drawing.Color.Silver;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).EndInit();
@@ -647,7 +666,8 @@
         private System.Windows.Forms.ToolStripMenuItem programFilterTS;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem registryLoadToolStripMenuItem;
+        private System.Windows.Forms.Label waitlbl;
+        private System.Windows.Forms.ToolStripMenuItem update;
     }
 }
 

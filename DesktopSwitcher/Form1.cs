@@ -13,6 +13,8 @@ using Microsoft.Win32;
 using System.Xml.Serialization;
 using System.Diagnostics;
 using Utilities;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace DesktopSwitcher
 {
@@ -34,37 +36,6 @@ namespace DesktopSwitcher
             public WPSTYLE dwStyle;
         }
 
-        struct COMPONENTSOPT
-        {
-            public int dwSize;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fEnableComponents;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fActiveDesktop;
-        }
-
-        struct COMPPOS
-        {
-            public const int COMPONENT_TOP = 0x3FFFFFFF;
-            public const int COMPONENT_DEFAULT_LEFT = 0xFFFF;
-            public const int COMPONENT_DEFAULT_TOP = 0xFFFF;
-
-            public int dwSize;
-            public int iLeft;
-            public int iTop;
-            public int dwWidth;
-            public int dwHeight;
-            public int izIndex;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fCanResize;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fCanResizeX;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fCanResizeY;
-            public int iPreferredLeftPercent;
-            public int iPreferredTopPercent;
-        }
-
         [Flags]
         enum ITEMSTATE
         {
@@ -76,16 +47,6 @@ namespace DesktopSwitcher
             VALIDSTATEBITS =
             NORMAL | SPLIT | FULLSCREEN |
             unchecked((int)0x80000000) | 0x40000000
-        }
-
-        struct COMPSTATEINFO
-        {
-            public int dwSize;
-            public int iLeft;
-            public int iTop;
-            public int dwWidth;
-            public int dwHeight;
-            public int dwItemState;
         }
 
         enum COMP_TYPE
@@ -111,8 +72,6 @@ namespace DesktopSwitcher
             public bool fDirty;
             [MarshalAs(UnmanagedType.Bool)]
             public bool fNoScroll;
-            public COMPPOS cpPos;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string wszFriendlyName;
 
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = INTERNET_MAX_URL_LENGTH)]
@@ -198,9 +157,6 @@ System.Text.StringBuilder pwszPattern, int cchPattern, int
             dwReserved);
             void SetPattern([MarshalAs(UnmanagedType.LPWStr)] string
             pwszPattern, int dwReserved);
-            void GetDesktopItemOptions(ref COMPONENTSOPT pco, int dwReserved);
-            void SetDesktopItemOptions([In] ref COMPONENTSOPT pco, int
-            dwReserved);
             void AddDesktopItem([In] ref COMPONENT pcomp, int dwReserved);
             void AddDesktopItemWithUI(IntPtr hwnd, [In] ref COMPONENT pcomp,
             DTI_ADTIWUI dwFlags);
@@ -237,7 +193,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         public const string exts = ".jpg.jpeg.bmp.png";
         string[] denoms = new string[] { "Seconds", "Minutes", "Hours", "Days" };   //for interval settings
         int[] milidenoms = new int[] { 1000, 60000, 3600000, 8640000 };             //
-        Screen[] desktops = Screen.AllScreens; //array of all screens on system
+        List<Screen[]> desktops = new List<Screen[]>();// = Screen.AllScreens; //array of all screens on system
         int totalwidth; //total width of all screens
         int allheight = 0;
         int highest = 0;    //highest coordinate of all the screens
@@ -267,6 +223,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         {
             try
             {
+                desktops.Add(Screen.AllScreens);
                 InitializeComponent();
             }
             catch (Exception x) { MessageBox.Show(x.ToString()); }
@@ -275,7 +232,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         private void Form1_Load(object sender, EventArgs e)
         {
             menuStrip1.Visible = true;
-            dualmon.Checked = desktops.Length > 1;
+            dualmon.Checked = desktops[0].Length > 1;
             timer.Tick += new EventHandler(timer_Tick);
             trayicon.Icon = this.Icon;
             denombox.SelectedIndex = 1;
@@ -303,12 +260,13 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             inputfrm = new InputForm(this);
             //dir = new directory(dirtb.Text);
             //lastpic = dir.getpic(0);
+            if(update.Checked)
+                checkForUpdate();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            regsave();
-            //dir.savefile();
+            saveSettings();
         }
 
         /// <summary>
@@ -317,22 +275,24 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         /// </summary>
         private void getscreens()
         {
-            desktops = Screen.AllScreens;
+            desktops[0] = (Screen[])Screen.AllScreens.Clone();
             farthestleft = 0;
             totalwidth = 0;
             allheight = 0;
             highest = 0;
             lowest = 0;
-            ToolStripMenuItem[] t = new ToolStripMenuItem[desktops.Length];
-            for (int i = 0; i < desktops.Length; i++)
+            ToolStripMenuItem[] t = new ToolStripMenuItem[desktops[0].Length];
+            addToLog("getting::");
+            for (int i = 0; i < desktops[0].Length; i++)
             {
-                if (desktops[i].WorkingArea.X < farthestleft)
-                    farthestleft = desktops[i].Bounds.X;
-                totalwidth += desktops[i].Bounds.Width;
-                if (desktops[i].WorkingArea.Bottom > lowest)
-                    lowest = desktops[i].Bounds.Bottom;
-                if (desktops[i].WorkingArea.Top < highest)
-                    highest = desktops[i].Bounds.Top;
+                if (desktops[0][i].WorkingArea.X < farthestleft)
+                    farthestleft = desktops[0][i].Bounds.X;
+                totalwidth += desktops[0][i].Bounds.Width;
+                if (desktops[0][i].WorkingArea.Bottom > lowest)
+                    lowest = desktops[0][i].Bounds.Bottom;
+                if (desktops[0][i].WorkingArea.Top < highest)
+                    highest = desktops[0][i].Bounds.Top;
+                addToLog("screen: " + i + "\n\tbottom: " + desktops[0][i].Bounds.Bottom + "\n\ttop: " + desktops[0][i].Bounds.Top);
             }
             //finds order of screens from left to right by finding lowest, adding it to desktops array and then discarding it to search for the rest
             int prevlow = farthestleft - 1;
@@ -349,20 +309,20 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                         y = Screen.AllScreens[j].WorkingArea.Y;
                     }
                 }
-                desktops[i] = Screen.FromPoint(new Point(low, y));
+                desktops[0][i] = Screen.FromPoint(new Point(low, y));
                 prevlow = low;
             }
-            for (int i = 0; i < desktops.Length; i++)
+            for (int i = 0; i < desktops[0].Length; i++)
             {
                 t[i] = new ToolStripMenuItem();
                 ToolStripMenuItem[] props = new ToolStripMenuItem[3];
                 for (int j = 0; j < props.Length; j++)
                     props[j] = new ToolStripMenuItem();
                 t[i].Text = "Screen " + (i + 1).ToString();
-                if (desktops[i].Primary)
+                if (desktops[0][i].Primary)
                     t[i].Text += "(P)";
-                props[0].Text = "Width:  " + desktops[i].Bounds.Width.ToString();
-                props[1].Text = "Height: " + desktops[i].Bounds.Height.ToString();
+                props[0].Text = "Width:  " + desktops[0][i].Bounds.Width.ToString();
+                props[1].Text = "Height: " + desktops[0][i].Bounds.Height.ToString();
                 props[2].Text = "Ratio:  " + getratio(i).ToString();
                 t[i].DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, props));
             }
@@ -370,31 +330,6 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
             screenslist.DropDownItems.Clear();
             screenslist.DropDownItems.AddRange(new ToolStripItemCollection(menuStrip1, t));
-        }
-
-        void regGet()
-        {
-            try
-            {
-                RegistryKey ourkey = Registry.CurrentUser;
-                ourkey = ourkey.OpenSubKey(@"Software\Schraitle\Desktop");
-                dirtb.Text = (string)ourkey.GetValue("dir");
-                timernum.Value = decimal.Parse((string)ourkey.GetValue("interval"));
-                startmintool.Checked = bool.Parse((string)ourkey.GetValue("startmin"));
-                denombox.SelectedIndex = (int)ourkey.GetValue("denomindex");
-                dualmon.Checked = bool.Parse((string)ourkey.GetValue("dualmon"));
-                ratiobox.Value = decimal.Parse((string)ourkey.GetValue("ratio"));
-                usebox.Value = decimal.Parse((string)ourkey.GetValue("use"));
-                autostart.Checked = bool.Parse((string)ourkey.GetValue("autostart"));
-                subdirs.Checked = bool.Parse((string)ourkey.GetValue("subdirs"));
-                showtips.Checked = bool.Parse((string)ourkey.GetValue("balloon"));
-                alwaysparse.Checked = bool.Parse((string)ourkey.GetValue("parse"));
-                autoparse.Checked = bool.Parse((string)ourkey.GetValue("autoparse"));
-                fade7.Checked = bool.Parse((string)ourkey.GetValue("fade7"));
-                progfilter += (string)ourkey.GetValue("progfilter");
-                ourkey.Close();
-            }
-            catch (Exception x) { MessageBox.Show(x.ToString()); }
         }
 
         void getSettings()
@@ -432,6 +367,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                     progfilter += (string)settings["progfilter"];
                 if (settings.Contains("stats"))
                     statenable.Checked = (bool)settings["stats"];
+                if (settings.Contains("update"))
+                    update.Checked = (bool)settings["update"];
                 RegistryKey startup = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
                 if (startup.GetValue("SchDesktopSwitcher") != null)
                     winstart.Checked = true;
@@ -440,7 +377,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             catch (Exception x) { MessageBox.Show("Error with the save data, either this is the first time you've run this program, or the program can't access your apptata(UAC)\n\n" + x.ToString()); }         
         }
 
-        private void regsave()
+        private void saveSettings()
         {
             Hashtable settings = new Hashtable();
             settings["dir"] = dirtb.Text;
@@ -458,30 +395,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             settings["fade7"] = fade7.Checked;
             settings["progfilter"] = progfilter;
             settings["stats"] = statenable.Checked;
+            settings["update"] = update.Checked;
             Utilities.saveSettings(settings);
-
-            /*try
-            {
-                RegistryKey ourkey = Registry.CurrentUser;
-                ourkey = ourkey.CreateSubKey(@"Software\Schraitle\Desktop");
-                ourkey.OpenSubKey(@"Software\Schraitle\Desktop", true);
-                ourkey.SetValue("dir", dirtb.Text);
-                ourkey.SetValue("interval", timernum.Value);
-                ourkey.SetValue("startmin", startmintool.Checked);
-                ourkey.SetValue("denomindex", denombox.SelectedIndex);
-                ourkey.SetValue("dualmon", dualmon.Checked);
-                ourkey.SetValue("ratio", ratiobox.Value);
-                ourkey.SetValue("use", usebox.Value);
-                ourkey.SetValue("autostart", autostart.Checked);
-                ourkey.SetValue("subdirs", subdirs.Checked);
-                ourkey.SetValue("balloon", showtips.Checked);
-                ourkey.SetValue("parse", alwaysparse.Checked);
-                ourkey.SetValue("autoparse", autoparse.Checked);
-                ourkey.SetValue("fade7", fade7.Checked);
-                ourkey.SetValue("progfilter", progfilter);
-                ourkey.Close();
-            }
-            catch (Exception x) { x.ToString(); }*/
         }
 
         /// <summary>
@@ -490,27 +405,27 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         /// <param name="popup">whether or not to display screen information after diagnostic</param>
         private void diagnostic(bool popup)
         {
-            desktops = Screen.AllScreens;
+            desktops[0] = Screen.AllScreens;
             getscreens();
-            regsave();
+            saveSettings();
             if (popup)
             {
                 string done = " Screen(s)\n\nOrder:\n";
-                //for (int i = 0; i < desktops.Length; i++)
+                //for (int i = 0; i < desktops[0].Length; i++)
                 //    done += " | " + (i+1).ToString(); ;
                 //done += " |";
                 diagnosticForm diag = new diagnosticForm();
-                diag.label1.Text = ("Done!\n\n" + desktops.Length.ToString() + done);
+                diag.label1.Text = ("Done!\n\n" + desktops[0].Length.ToString() + done);
                 diag.pictureBox1.Image = showVisual();
                 diag.pictureBox1.Size = diag.pictureBox1.Image.Size;
                 diag.Height = diag.label1.Height + 60 + diag.pictureBox1.Height;
                 diag.Width = diag.pictureBox1.Width + 20;
                 if (diag.Width < 250)
-                    diag.Width = 250;               
+                    diag.Width = 250;
                 diag.Show();
-                //MessageBox.Show("Done!\n\n" + desktops.Length.ToString() + done);
+                //MessageBox.Show("Done!\n\n" + desktops[0].Length.ToString() + done);
             }
-            showVisual();
+            //showVisual();
         }
 
         /// <summary>
@@ -529,12 +444,13 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             Brush pen2 = Brushes.Black;
             g.FillRectangle(pen2, 0, 0, (float)world.Width, (float)world.Height);
             Font font = new Font(FontFamily.GenericSansSerif, 15);
-            for (int i = 0; i < desktops.Length; i++)
+            for (int i = 0; i < desktops[0].Length; i++)
             {
-                float width = (float)desktops[i].Bounds.Width / scale;
-                float height = (float)desktops[i].Bounds.Height / scale;
-                float x = farleft + ((float)desktops[i].WorkingArea.X / scale);
-                float y = high +((float)desktops[i].WorkingArea.Y / scale);
+                float width = (float)desktops[0][i].Bounds.Width / scale;
+                float height = (float)desktops[0][i].Bounds.Height / scale;
+                float x = farleft + ((float)desktops[0][i].WorkingArea.X / scale);
+                float y = high +((float)desktops[0][i].WorkingArea.Y / scale);
+                addToLog("screen: " + i + "\n\twidth: " + width + "\n\theight: " + height + "\n\tworkx: " + desktops[0][i].WorkingArea.X + "\n\tworky: " + desktops[0][i].WorkingArea.Y);
                 g.DrawString((i+1).ToString(), font, Brushes.White, new PointF(x + width/2, y + height/2));
                 g.DrawRectangle(pen, offset + x, offset + y, width, height);
             }
@@ -562,7 +478,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         /// <returns></returns>
         private double getratio(int screen)
         {
-            return (double)desktops[screen].Bounds.Width / (double)desktops[screen].Bounds.Height;
+            return (double)desktops[0][screen].Bounds.Width / (double)desktops[0][screen].Bounds.Height;
         }
 
         /// <summary>
@@ -656,18 +572,18 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             if(given != 0)
                 while (width < totalwidth - given)
                 {
-                    width += desktops[screen].Bounds.Width;
+                    width += desktops[0][screen].Bounds.Width;
                     screen++;
                 }
-            width = desktops[screen].Bounds.Width;
-            int height = desktops[screen].Bounds.Height;
+            width = desktops[0][screen].Bounds.Width;
+            int height = desktops[0][screen].Bounds.Height;
             screen++;
-            while (screen < desktops.Length)
+            while (screen < desktops[0].Length)
             {
-                if (desktops[screen].Bounds.Height == height)
-                    width += desktops[screen].Bounds.Width;
+                if (desktops[0][screen].Bounds.Height == height)
+                    width += desktops[0][screen].Bounds.Width;
                 else
-                    screen = desktops.Length;
+                    screen = desktops[0].Length;
                 screen++;
             }
             return width;
@@ -679,6 +595,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         /// <param name="use">file name and path to use for wallpaper, for random image, use ""</param>
         private void changepaper(string use)
         {
+            formWait(true);
+            Application.DoEvents();
             addToLog("===========================================================");
             addToLog("Start: " + DateTime.Now.ToString());
             addToLog("===========================================================");
@@ -706,7 +624,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             Bitmap b = new Bitmap(file);
             int i = 0;
             i += makepicture(ref final, ref b, i);
-            while (i < desktops.Length)
+            while (i < desktops[0].Length)
             {
                 string touse = "";
                 if (selecting)
@@ -749,7 +667,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 usedpic = true;
                 b2.Dispose();
                 if (usedwidth == totalwidth)
-                    i = desktops.Length;
+                    i = desktops[0].Length;
             }
             usedwidth = 0;
 
@@ -805,6 +723,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             if(randompicking && statenable.Checked)
                 stat.savestats();
             randompicking = false;
+            formWait(false);
         }
 
         /// <summary>
@@ -999,12 +918,12 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 }
                 System.Threading.Thread.Sleep(10);
                 int j = screen;
-                int workingwidth = desktops[screen].Bounds.Width;
-                int workingheight = desktops[screen].Bounds.Height;
-                if (b.getwidth() > desktops[screen].Bounds.Width && !sameratio(b, screen, (double)usebox.Value) && desktops.Length > 1)
+                int workingwidth = desktops[0][screen].Bounds.Width;
+                int workingheight = desktops[0][screen].Bounds.Height;
+                if (b.getwidth() > desktops[0][screen].Bounds.Width && !sameratio(b, screen, (double)usebox.Value) && desktops[0].Length > 1)
                 {
                     int i = screen;
-                    while (i < desktops.Length - 1 && b.getwidth() > workingwidth && !sameratio(b, workingwidth, workingheight, (double)usebox.Value))
+                    while (i < desktops[0].Length - 1 && b.getwidth() > workingwidth && !sameratio(b, workingwidth, workingheight, (double)usebox.Value))
                     {
                         i++;
                         j++;
@@ -1015,7 +934,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                         { }
                         else
                         {
-                            workingwidth -= desktops[i].Bounds.Width;
+                            workingwidth -= desktops[0][i].Bounds.Width;
                             j--;
                         }
                     else
@@ -1025,7 +944,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 else
                     j = 1;
                 if(j == 1)
-                    if (b.getwidth() > maxwidth && !sameratio(b, maxwidth, workingheight, (double)usebox.Value) || !sameratio(b, desktops[screen].Bounds.Width, desktops[screen].Bounds.Height, (double)usebox.Value))
+                    if (b.getwidth() > maxwidth && !sameratio(b, maxwidth, workingheight, (double)usebox.Value) || !sameratio(b, desktops[0][screen].Bounds.Width, desktops[0][screen].Bounds.Height, (double)usebox.Value))
                         ok = false;
                     else
                         ok = true;
@@ -1064,7 +983,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         {
             int temp = 0;
             for (int i = start; i <= end; i++)
-                temp += desktops[i].Bounds.Width;
+                temp += desktops[0][i].Bounds.Width;
             return temp;
         }
 
@@ -1096,8 +1015,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         {
             int action = 0;
             int j = screen;
-            int workingwidth = desktops[screen].Bounds.Width;
-            int workingheight = desktops[screen].Bounds.Height;
+            int workingwidth = desktops[0][screen].Bounds.Width;
+            int workingheight = desktops[0][screen].Bounds.Height;
 
             if (usedwidth >= widthofscreens(0, screen))  //if the screen has already been filled over, return the bitmap back unchanged
             {
@@ -1105,10 +1024,10 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 return 1;
             }
             // if picture is sufficiently larger than the working screen, find how many more screens to go out to
-            if (picin.Width > desktops[screen].Bounds.Width && !sameratio(ref picin, screen, (double)ratiobox.Value) && desktops.Length > 1)
+            if (picin.Width > desktops[0][screen].Bounds.Width && !sameratio(ref picin, screen, (double)ratiobox.Value) && desktops[0].Length > 1)
             {
                 int i = screen;
-                while (i < desktops.Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
+                while (i < desktops[0].Length - 1 && picin.Width > workingwidth && !sameratio(ref picin, workingwidth, workingheight, (double)ratiobox.Value))
                 {
                     i++;
                     j++;
@@ -1119,7 +1038,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                         action = 0;
                     else
                     {
-                        workingwidth -= desktops[i].Bounds.Width;
+                        workingwidth -= desktops[0][i].Bounds.Width;
                         j--;
                     }
                 else
@@ -1135,7 +1054,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             int realheight = picin.Height;
             int realwidth = picin.Width;
             int xpad = 0;
-            int ypad = desktops[screen].WorkingArea.Y + (highest * -1);
+            int ypad = desktops[0][screen].WorkingArea.Y + (highest * -1);
             Bitmap temp = new Bitmap(workingwidth, allheight);
             //temp becomes image with dimensions of allheight x monitor width
             if (action == 0) //scaled (scaled up or down to fit in the closest screen bound)
@@ -1237,6 +1156,73 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             textlog.ScrollToCaret();
         }
 
+        /// <summary>
+        /// performs actions which make the window inactive and waiting
+        /// </summary>
+        /// <param name="waiting">true if waiting</param>
+        private void formWait(bool waiting)
+        {
+            this.Enabled = !waiting;
+            waitlbl.Visible = waiting;
+        }
+
+        //http://www.csharp-station.com/HowTo/HttpWebFetch.aspx
+        /// <summary>
+        /// attempts to connect to flat-line page and find out if there is a newer version or not
+        /// </summary>
+        private void checkForUpdate()
+        {
+            Stream resStream = Stream.Null;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://schraitle.flat-line.net/programs/switcher/update.txt");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                resStream = response.GetResponseStream();
+            }
+            catch (Exception x)
+            {
+                x.ToString();
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            byte[] buf = new byte[8192];
+            string tempString = null;
+            int count = 0;
+
+            do
+            {
+                // fill the buffer with data
+                count = resStream.Read(buf, 0, buf.Length);
+
+                // make sure we read some data
+                if (count != 0)
+                {
+                    // translate from bytes to ASCII text
+                    tempString = Encoding.ASCII.GetString(buf, 0, count);
+
+                    // continue building the string
+                    sb.Append(tempString);
+                }
+            }
+            while (count > 0); // any more data to read?
+
+            String[] update = sb.ToString().Split('\n');
+            Regex finder = new Regex(@"(\d*)\.(\d*)\.(\d*)");
+            MatchCollection matches = finder.Matches(update[0]);
+            if (matches.Count > 0)
+            {
+                Version newOne = new Version(Int32.Parse(matches[0].Groups[1].Value), Int32.Parse(matches[0].Groups[2].Value), Int32.Parse(matches[0].Groups[3].Value));
+                Version thisOne = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                if (thisOne.CompareTo(newOne) >= 0) { return; }
+                if (MessageBox.Show(String.Format("There is an update available to version {0}.{1}.{2}\nWould you like to update?", new object[] { newOne.Major, newOne.Minor, newOne.Build }), "DesktopSwitcher Update!", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                }
+                Process.Start("http://schraitle.flat-line.net/programs/switcher/index.php");
+            }
+        }
+
         #region events
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
@@ -1295,7 +1281,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 }
                 else
                     MessageBox.Show("There are no pictures in the specified directory");
-                regsave();
+                saveSettings();
             }
         }
 
@@ -1358,7 +1344,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         private void dualmon_Click(object sender, EventArgs e)
         {
-            if (desktops.Length < 2)
+            if (desktops[0].Length < 2)
                 dualmon.Checked = false;
         }
 
@@ -1437,14 +1423,14 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 if (logshow.Text == "Show Log")
                 {
                     logshow.Text = "Hide Log";
-                    this.Height = 386;
+                    this.Height += (textlog.Height + 8);
                     textlog.Visible = true;
                 }
                 else
                 {
                     logshow.Text = "Show Log";
                     textlog.Visible = false;
-                    this.Height = 170;                
+                    this.Height -= (textlog.Height + 8);
                 }
         }
 
@@ -1500,11 +1486,6 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Schraitle's Desktop Switcher\n" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n\nrubikscubist@gmail.com");
-        }
-
-        private void registryLoadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            regGet();
         }
     }
 }
