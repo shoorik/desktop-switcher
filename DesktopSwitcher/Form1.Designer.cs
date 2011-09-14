@@ -48,6 +48,7 @@
             this.statenable = new System.Windows.Forms.ToolStripMenuItem();
             this.showtips = new System.Windows.Forms.ToolStripMenuItem();
             this.fade7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.update = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.programFilterTS = new System.Windows.Forms.ToolStripMenuItem();
             this.diagnosticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,7 +84,6 @@
             this.logshow = new System.Windows.Forms.Button();
             this.pb1 = new System.Windows.Forms.ProgressBar();
             this.waitlbl = new System.Windows.Forms.Label();
-            this.update = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timernum)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -153,19 +153,19 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -249,6 +249,14 @@
             this.fade7.Name = "fade7";
             this.fade7.Size = new System.Drawing.Size(191, 22);
             this.fade7.Text = "Windows 7 Fade";
+            // 
+            // update
+            // 
+            this.update.CheckOnClick = true;
+            this.update.Name = "update";
+            this.update.Size = new System.Drawing.Size(191, 22);
+            this.update.Text = "Check For Updates";
+            this.update.ToolTipText = "Check for updates on program launch";
             // 
             // toolStripSeparator1
             // 
@@ -546,7 +554,7 @@
             this.waitlbl.AutoSize = true;
             this.waitlbl.BackColor = System.Drawing.Color.White;
             this.waitlbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.waitlbl.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            this.waitlbl.Cursor = System.Windows.Forms.Cursors.Default;
             this.waitlbl.Font = new System.Drawing.Font("OpenSymbol", 17F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
             this.waitlbl.Location = new System.Drawing.Point(2, 54);
             this.waitlbl.Name = "waitlbl";
@@ -555,14 +563,6 @@
             this.waitlbl.Text = "Please Wait While Background Changes...";
             this.waitlbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.waitlbl.Visible = false;
-            // 
-            // update
-            // 
-            this.update.CheckOnClick = true;
-            this.update.Name = "update";
-            this.update.Size = new System.Drawing.Size(191, 22);
-            this.update.Text = "Check For Updates";
-            this.update.ToolTipText = "Check for updates on program launch";
             // 
             // Form1
             // 

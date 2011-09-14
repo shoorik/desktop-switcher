@@ -37,9 +37,13 @@ if your desktop size changes or relative positions of monitors is changed, run d
 won't work correctly if there are two rows of monitors
 if you delete a picture and are using parsing, make sure to update the library, otherwise there could be an error later
 for the windows 7 fade effect, check the windows 7 fade option, though you have to manually change your wallpaper in windows once per computer boot for the fade effect to start working(for now)
+if check for updates is checked, program will check for updates every time it starts
 
 
 changelog:
+09/14/11	---1.1.1---
+			fixed issue with window staying disabled when wallpaper change function exited early
+			bring wait label to front every time now so it doesn't appear behind other controls
 09/13/11:	---1.1.0---
 			removed registry interaction, if for some reason you were using this before and missed the latest version, get version 1.0.10 and load your registry settings with the menu item
 			disabled main window while wallpaper change is in progress

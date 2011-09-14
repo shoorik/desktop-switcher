@@ -596,6 +596,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         private void changepaper(string use)
         {
             formWait(true);
+            waitlbl.BringToFront();
             Application.DoEvents();
             addToLog("===========================================================");
             addToLog("Start: " + DateTime.Now.ToString());
@@ -615,6 +616,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                 final.Dispose();
                 randompicking = false;
                 addToLog("chosen picture doesn't exist, canceling operation (update library to weed out all missing files)");
+                formWait(false);
                 return;
             }
             //pictures.Add(file);
@@ -651,6 +653,7 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
                     usedwidth = 0;
                     randompicking = false;
                     addToLog("chosen picture doesn't exist, canceling operation (update library to weed out all missing files)");
+                    formWait(false);
                     return;
                 }
                 Bitmap b2 = new Bitmap(touse);
