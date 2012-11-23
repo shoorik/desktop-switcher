@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopSwitcher", "DesktopSwitcher\DesktopSwitcher.csproj", "{A0FE9CC5-D3C8-4FCB-AD6C-9A76D3C8B108}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SwitcherSetup", "SwitcherSetup\SwitcherSetup.vdproj", "{A4FF530A-CB33-4CB7-975E-8BC60A0AD609}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +13,6 @@ Global
 		{A0FE9CC5-D3C8-4FCB-AD6C-9A76D3C8B108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0FE9CC5-D3C8-4FCB-AD6C-9A76D3C8B108}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0FE9CC5-D3C8-4FCB-AD6C-9A76D3C8B108}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4FF530A-CB33-4CB7-975E-8BC60A0AD609}.Debug|Any CPU.ActiveCfg = Debug
-		{A4FF530A-CB33-4CB7-975E-8BC60A0AD609}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
