@@ -136,7 +136,7 @@
             this.currentPicturesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(403, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(412, 24);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -153,19 +153,19 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -529,7 +529,6 @@
             this.textlog.Size = new System.Drawing.Size(382, 208);
             this.textlog.TabIndex = 17;
             this.textlog.Text = "";
-            this.textlog.Visible = false;
             // 
             // logshow
             // 
@@ -537,7 +536,7 @@
             this.logshow.Name = "logshow";
             this.logshow.Size = new System.Drawing.Size(75, 23);
             this.logshow.TabIndex = 18;
-            this.logshow.Text = "Show Log";
+            this.logshow.Text = "Hide Log";
             this.logshow.UseVisualStyleBackColor = true;
             this.logshow.MouseDown += new System.Windows.Forms.MouseEventHandler(this.logshow_MouseDown);
             // 
@@ -555,10 +554,10 @@
             this.waitlbl.BackColor = System.Drawing.Color.White;
             this.waitlbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.waitlbl.Cursor = System.Windows.Forms.Cursors.Default;
-            this.waitlbl.Font = new System.Drawing.Font("OpenSymbol", 17F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
+            this.waitlbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 17F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
             this.waitlbl.Location = new System.Drawing.Point(2, 54);
             this.waitlbl.Name = "waitlbl";
-            this.waitlbl.Size = new System.Drawing.Size(399, 25);
+            this.waitlbl.Size = new System.Drawing.Size(504, 31);
             this.waitlbl.TabIndex = 20;
             this.waitlbl.Text = "Please Wait While Background Changes...";
             this.waitlbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -569,7 +568,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(403, 136);
+            this.ClientSize = new System.Drawing.Size(412, 359);
             this.Controls.Add(this.waitlbl);
             this.Controls.Add(this.pb1);
             this.Controls.Add(this.label1);

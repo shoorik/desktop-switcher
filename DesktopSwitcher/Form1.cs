@@ -221,6 +221,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
 
         public Form1()
         {
+            Application.ThreadException += Application_ThreadException;
+
             try
             {
                 desktops.Add(Screen.AllScreens);
@@ -229,8 +231,15 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             catch (Exception x) { MessageBox.Show(x.ToString()); }
         }
 
+        void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            addToLog("Error: " + e.Exception.ToString());
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            addToLog("Loading...");
+
             menuStrip1.Visible = true;
             dualmon.Checked = desktops[0].Length > 1;
             timer.Tick += new EventHandler(timer_Tick);
@@ -262,6 +271,8 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
             //lastpic = dir.getpic(0);
             if(update.Checked)
                 checkForUpdate();
+
+            addToLog("Loaded");
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -1490,5 +1501,6 @@ string pwszSource, ref COMPONENT pcomp, int dwReserved);
         {
             MessageBox.Show("Schraitle's Desktop Switcher\n" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n\nrubikscubist@gmail.com");
         }
+
     }
 }
